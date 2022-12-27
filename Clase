@@ -1,0 +1,5 @@
+Utilizator (email, parola, preferinte, locatie, bilete cumparate, evenimente salvate)
+Utile (preferinte <<enum>>, locatie <<enum>>)
+Eveniment (titlu, locatie, data <<data, luna, ora>>, categorie, descriere, pret bilet, valuta pret)
+Bilet (titlu, locatie, data, categorie, pret bilet)
+Data (data propriu-zisa, luna, an, ora) .toString() -> Data: 6-9 august 2023, ora 15:00
