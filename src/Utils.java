@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class Utile {
+public class Utils {
     public static ArrayList<String> preference = new ArrayList<String>(){{
         
         add("Arta");

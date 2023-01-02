@@ -1,4 +1,4 @@
-public class Eveniment {
+public class Event {
     private String title;
     private String titleColor;
     private String location;
@@ -14,7 +14,24 @@ public class Eveniment {
     private String hourDate;
 
     //Constructor
-    Eveniment(){};
+    Event(){
+        
+    };
+
+    //Relevanta
+    int getRelevance(User user,Event event){
+        int relevance=0;
+        if(user.getLocation() ==event.location){
+            relevance++;
+        }
+        for(int i=0;i<user.getPreference().size();i++){
+            if(user.getPreference().get(i).equalsIgnoreCase(event.category)){
+                relevance++;
+                break;
+            }
+        }
+        return relevance;
+    }
 
 
 
