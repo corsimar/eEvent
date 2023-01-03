@@ -1,13 +1,20 @@
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
-public class User {
+public class User implements Serializable {
     Utils utile = new Utils();
     private String email;
     private String password;
     private ArrayList<Integer> preference;
     private String location;
-    private ArrayList<Event> savedEvent;
+    //private ArrayList<Event> savedEvent;
     
 
     //1~mail~parola
@@ -42,14 +49,28 @@ public class User {
 
     //sterge preferinte
     
-    void removePreference(int preference){
+    /*void removePreference(int preference){
         try {
             if()
         } catch (Exception e) {
             // TODO: handle exception
         }
+    }*/
+
+    //citeste user
+    static User readUser() throws FileNotFoundException, IOException, ClassNotFoundException{
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream("users.txt"));
+        User user = (User) in.readObject();
+        return user;
     }
 
+
+    //salveaza user
+
+    static void saveUser(User user) throws FileNotFoundException, IOException{
+        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("users.txt"));
+        out.writeObject(user);
+    }
 
     //set si get
 
@@ -58,7 +79,9 @@ public class User {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        if(email.contains("@")){
+            this.email = email;
+        }
     }
 
     public String getPassword() {
@@ -69,13 +92,13 @@ public class User {
         this.password = password;
     }
 
-    public ArrayList<String> getPreference() {
+    /*public ArrayList<String> getPreference() {
         return this.preference;
     }
 
     public void setPreference(ArrayList<String> preference) {
         this.preference = preference;
-    }
+    }*/
 
     public String getLocation() {
         return this.location;
