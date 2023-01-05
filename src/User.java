@@ -10,19 +10,18 @@ import java.util.ArrayList;
 
 public class User implements Serializable {
     Utils utile = new Utils();
+    private boolean isLogged;
     private String email;
     private String password;
     private ArrayList<Integer> preference;
     private String location;
-    //private ArrayList<Event> savedEvent;
+    private ArrayList<Event> savedEvent;
     
-
-    //1~mail~parola
 
     //constructor
     User(){
         preference = new ArrayList<Integer>();
-        
+        savedEvent = new ArrayList<Event>();
 
     };
 
@@ -37,12 +36,18 @@ public class User implements Serializable {
         }
     }
 
+    //get evenimente salvate
+
+    public ArrayList<Event> getSavedEvents(){
+        return this.savedEvent;
+    }
+
     //adauga preferinte
     void addPreference(int preference){
         if(this.preference.size() == 0){
             this.preference.add(preference);
         }
-        else if(this.preference.contains(preference)){
+        else if(!this.preference.contains(preference)){
             this.preference.add(preference);
         }
     }
@@ -58,21 +63,59 @@ public class User implements Serializable {
     }*/
 
     //citeste user
-    static User readUser() throws FileNotFoundException, IOException, ClassNotFoundException{
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream("users.txt"));
-        User user = (User) in.readObject();
-        return user;
+   
+    static ArrayList<User> readUsers(){
+        try {
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream("src//data//users.txt"));
+            ArrayList<User> users = (ArrayList<User>) in.readObject();
+            return users;
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        catch(ClassNotFoundException e){
+            e.printStackTrace();
+        }
+        return null;
     }
-
 
     //salveaza user
 
-    static void saveUser(User user) throws FileNotFoundException, IOException{
-        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("users.txt"));
-        out.writeObject(user);
+    static void saveUser(ArrayList<User> users){
+        try {
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("src//data//users.txt"));
+            out.writeObject(users);
+            out.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
+
+    //logare
+    public boolean logIn(String email,String password){
+        ArrayList<User> users = User.readUsers();
+        for(int i = 0 ;i < users.size();i++){
+            if(users.get(i).getEmail().equalsIgnoreCase(email) && users.get(i).getPassword().equals(password)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
+
     //set si get
+
+    public boolean getIsLogged(){
+        return this.isLogged;
+    }
+
+    public void setIsLogged(){
+        this.isLogged = !this.isLogged;
+    }
 
     public String getEmail() {
         return this.email;
@@ -108,4 +151,9 @@ public class User implements Serializable {
         this.location = location;
     }
     
+
+    @Override
+    public String toString(){
+        return "Email:" + getEmail() + " password:" + getPassword(); 
+    }
 }
