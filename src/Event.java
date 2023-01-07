@@ -1,14 +1,20 @@
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
-
+import java.util.ArrayList;
+import java.awt.*;
 public class Event implements Serializable {
     private String title;
-    private String titleColor;
+    private Color titleColor;
     private String location;
     private String date;
     private String category;
     private String description;
     private double ticketPrice;
-    private String currency;
 
     private String daysDate;
     private String monthDate;
@@ -16,9 +22,7 @@ public class Event implements Serializable {
     private String hourDate;
 
     //Constructor
-    Event(){
-        
-    };
+    Event(){};
 
     //Relevanta
     int getRelevance(User user,Event event){
@@ -27,12 +31,42 @@ public class Event implements Serializable {
             relevance++;
         }
         for(int i=0;i<user.getPreference().size();i++){
-            if(user.getPreference().get(i).equalsIgnoreCase(event.category)){
+            if(user.getPreference().get(i).equals(event.category)){
                 relevance++;
                 break;
             }
         }
         return relevance;
+    }
+
+    //salveaza lista evenimente
+    public static void saveEvents(ArrayList<Event> events){
+        try {
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("src//data//events.txt"));
+            out.writeObject(events);
+            out.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    
+    //citeste lista evenimente
+    public static ArrayList<Event> readEvents(){
+        try {
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(("src//data//events.txt")));
+            ArrayList<Event> events = (ArrayList<Event>) in.readObject();
+            in.close();
+            return events;
+        } catch (IOException e) {
+            e.printStackTrace();
+            // TODO: handle exception
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
+        
     }
 
 
@@ -46,11 +80,11 @@ public class Event implements Serializable {
         this.title = title;
     }
 
-    public String getTitleColor() {
+    public Color getTitleColor() {
         return this.titleColor;
     }
 
-    public void setTitleColor(String titleColor) {
+    public void setTitleColor(Color titleColor) {
         this.titleColor = titleColor;
     }
 
@@ -93,14 +127,6 @@ public class Event implements Serializable {
 
     public void setTicketPrice(double ticketPrice) {
         this.ticketPrice = ticketPrice;
-    }
-
-    public String getCurrency() {
-        return this.currency;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
     }
 
     public String getDaysDate() {
