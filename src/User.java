@@ -7,19 +7,28 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 
 public class User implements Serializable {
     Utils utile = new Utils();
     private boolean isLogged;
     private String email;
     private String password;
-    private ArrayList<Integer> preference;
     private String location;
+    private ArrayList<Integer> preference;
     private ArrayList<Event> savedEvent;
     
 
     //constructor
     User(){
+        preference = new ArrayList<Integer>();
+        savedEvent = new ArrayList<Event>();
+    };
+
+    User(String email,String password){
+        this.email = email;
+        this.password = password;
         preference = new ArrayList<Integer>();
         savedEvent = new ArrayList<Event>();
 
@@ -36,11 +45,21 @@ public class User implements Serializable {
         }
     }
 
-    //get evenimente salvate
+    //sterge eveniment salvat
 
-    public ArrayList<Event> getSavedEvents(){
-        return this.savedEvent;
+    void removeSavedEvent(Event event){
+        if(getSavedEvents()!=null){
+            if(getSavedEvents().contains(event)){
+                for(int i=0;i<getSavedEvents().size();i++){
+                    if(getSavedEvents().get(i).equals(event)){
+                        getSavedEvents().remove(i);
+                    }
+                }
+            }
+        }
     }
+
+    
 
     //adauga preferinte
     void addPreference(int preference){
@@ -54,13 +73,15 @@ public class User implements Serializable {
 
     //sterge preferinte
     
-    /*void removePreference(int preference){
-        try {
-            if()
-        } catch (Exception e) {
-            // TODO: handle exception
-        }
-    }*/
+    void removePreference(int preference){
+        if(getPreference().contains(preference)){
+            for (int i=0;i<getPreference().size();i++){
+                if(getPreference().get(i).equals(preference)){
+                    getPreference().remove(i);
+                }
+            }
+        }    
+    }
 
     //citeste user
    
@@ -95,17 +116,37 @@ public class User implements Serializable {
 
     //logare
     public boolean logIn(String email,String password){
-        ArrayList<User> users = User.readUsers();
-        for(int i = 0 ;i < users.size();i++){
-            if(users.get(i).getEmail().equalsIgnoreCase(email) && users.get(i).getPassword().equals(password)){
-                return true;
-            }
+        if(userExists(email, password)){
+            return true;
         }
         return false;
     }
 
+    //verifica daca exista deja
+    public static boolean userExists(String email,String password){
+        ArrayList<User> existentUsers = User.readUsers();
+        for(int i=0;i<existentUsers.size();i++){
+            if(existentUsers.get(i).getEmail().equalsIgnoreCase(email) && existentUsers.get(i).getPassword().equals(password)){
+                return true;
+            }
+        }
+        return false;
+    } 
 
 
+
+    //inregistrare
+
+    public static void registerUser(String email,String password){
+        if(userExists(email, password)){
+            JOptionPane.showMessageDialog(null,"Utilizatorul exista deja");
+        }
+        else{
+            ArrayList<User> users = User.readUsers();
+            users.add(new User(email,password));
+            User.saveUser(users);
+        }
+    }
 
     //set si get
 
@@ -135,13 +176,10 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    /*public ArrayList<String> getPreference() {
+    public ArrayList<Integer> getPreference() {
         return this.preference;
     }
 
-    public void setPreference(ArrayList<String> preference) {
-        this.preference = preference;
-    }*/
 
     public String getLocation() {
         return this.location;
@@ -150,10 +188,21 @@ public class User implements Serializable {
     public void setLocatie(String location) {
         this.location = location;
     }
-    
+    //get evenimente salvate
 
-    @Override
+    public ArrayList<Event> getSavedEvents(){
+        return this.savedEvent;
+    }
+
+
+
+    //toString()
     public String toString(){
-        return "Email:" + getEmail() + " password:" + getPassword(); 
+       StringBuffer sb = new StringBuffer();
+       sb.append("Email: ");
+       sb.append(this.getEmail());
+       sb.append("\nPassword: ");
+       sb.append(password);
+       return sb.toString(); 
     }
 }

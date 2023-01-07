@@ -17,14 +17,18 @@ class Main{
         Event event1 = new Event();
         event1.setTitle("Untold");
         geani.addSavedEvent(event1);
+        geani.removeSavedEvent(new Event());
 
 
         User.saveUser(users);
 
         
         ArrayList<User>usersS = User.readUsers();
-        System.out.println(usersS.get(1));
         System.out.println(usersS.get(0).getSavedEvents().get(0).getTitle());
+        
+        
+
+
         
         
     }
