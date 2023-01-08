@@ -101,8 +101,16 @@ public class Event implements Serializable {
     }
 
     public void setDate() {
-        this.date = "Data: " + getDaysDate() +" "+ getMonthDate()+
-                    " " + getYearDate() + ", ora " + getHourDate();
+        StringBuffer sb = new StringBuffer();
+        sb.append("Data: ");
+        sb.append(getDaysDate());
+        sb.append(" ");
+        sb.append(getMonthDate());
+        sb.append(" ");
+        sb.append(getYearDate());
+        sb.append(", ora ");
+        sb.append(getHourDate());
+        this.date = sb.toString();
     }
 
     public String getCategory() {

@@ -18,21 +18,46 @@ public class User implements Serializable {
     private String location;
     private ArrayList<Integer> preference;
     private ArrayList<Event> savedEvent;
+    private ArrayList<Ticket> boughtTickets;
     
 
     //constructor
     User(){
-        preference = new ArrayList<Integer>();
-        savedEvent = new ArrayList<Event>();
+        this.preference = new ArrayList<Integer>();
+        this.savedEvent = new ArrayList<Event>();
+        this.boughtTickets = new ArrayList<Ticket>();
     };
 
     User(String email,String password){
         this.email = email;
         this.password = password;
-        preference = new ArrayList<Integer>();
-        savedEvent = new ArrayList<Event>();
-
+        this.preference = new ArrayList<Integer>();
+        this.savedEvent = new ArrayList<Event>();
+        this.boughtTickets = new ArrayList<Ticket>();
     };
+
+
+    //adauga bilet cumparat
+    public void buyTicket(Ticket ticket){
+        getBoughtTickets().add(ticket);
+    }
+
+    //sterge bilet cumparat
+
+    public void sellTicket(Ticket ticket){
+        if(getBoughtTickets()!=null){
+            if(getBoughtTickets().contains(ticket)){
+                for(int i=0;i<getBoughtTickets().size();i++){
+                    if(getBoughtTickets().get(i).equals(ticket)){
+                        getBoughtTickets().remove(i);
+                    }
+                }
+            }
+        }
+    }
+
+
+
 
     //adauga evenimente salvate
 
@@ -188,13 +213,17 @@ public class User implements Serializable {
     public void setLocatie(String location) {
         this.location = location;
     }
+
     //get evenimente salvate
 
     public ArrayList<Event> getSavedEvents(){
         return this.savedEvent;
     }
 
-
+    //get bilete cumparate
+    public ArrayList<Ticket> getBoughtTickets(){
+        return this.boughtTickets;
+    }
 
     //toString()
     public String toString(){
