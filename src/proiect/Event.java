@@ -4,77 +4,74 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.awt.*;
 
-
+@SuppressWarnings("unchecked")
 public class Event implements Serializable {
     private String title;
     private Color titleColor;
     private String location;
     private String date;
+    private String hour;
     private String category;
     private String description;
-    private double ticketPrice;
+    private int ticketPrice;
+    private int relevance;
 
-    private String daysDate;
-    private String monthDate;
-    private int yearDate;
-    private String hourDate;
-
-    //Constructor
-    Event(){};
+    public Event(String title, Color titleColor, String location, String date, String hour, String category, String description, int ticketPrice) {
+        this.title = title; this.titleColor = titleColor; this.location = location; this.date = date; this.hour = hour; this.category = category; this.description = description; this.ticketPrice = ticketPrice;
+    }
 
     //Relevanta
-    int getRelevance(User user,Event event){
-        int relevance=0;
-        if(user.getLocation() ==event.location){
-            relevance++;
+    public int getRelevance(User user) {
+        this.relevance = 0;
+        if(user.getLocation() == this.location) {
+            this.relevance++;
         }
-        for(int i=0;i<user.getPreference().size();i++){
-            if(user.getPreference().get(i).equals(event.category)){
-                relevance++;
+        for(int i = 0; i < user.getPreferences().size(); i++) {
+            if(Utils.categories.get(user.getPreferences().get(i)).equals(this.category)) {
+                this.relevance++;
                 break;
             }
         }
-        return relevance;
+        return this.relevance;
     }
 
-    //salveaza lista evenimente
-    public static void saveEvents(ArrayList<Event> events){
+    public static void saveEvent(Event event) {
         try {
-            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("src//data//events.txt"));
+            StringBuffer path = new StringBuffer(System.getProperty("user.dir"));
+            path.append("\\src\\data\\events.txt");
+
+            ArrayList<Event> events = readEvents();
+            events.add(event);
+
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(path.toString()));
             out.writeObject(events);
             out.close();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
     
-    //citeste lista evenimente
-    public static ArrayList<Event> readEvents(){
+    public static ArrayList<Event> readEvents() {
         try {
-            ObjectInputStream in = new ObjectInputStream(new FileInputStream(("src//data//events.txt")));
+            StringBuffer path = new StringBuffer(System.getProperty("user.dir"));
+            path.append("\\src\\data\\events.txt");
+
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream((path.toString())));
             ArrayList<Event> events = (ArrayList<Event>) in.readObject();
             in.close();
             return events;
         } catch (IOException e) {
             e.printStackTrace();
-            // TODO: handle exception
         } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        return null;
-        
+        return new ArrayList<>();
     }
 
-
-
-    //set si get
     public String getTitle() {
         return this.title;
     }
@@ -99,21 +96,37 @@ public class Event implements Serializable {
         this.location = location;
     }
 
-    public String getDate() {
-        return this.date;
+    public String getDateMonth() {
+        try {
+            int m = Integer.parseInt(date.substring(3, 5));
+            if(m == 1) return "Ianuarie";
+            else if(m == 2) return "Februarie";
+            else if(m == 3) return "Martie";
+            else if(m == 4) return "Aprilie";
+            else if(m == 5) return "Mai";
+            else if(m == 6) return "Iunie";
+            else if(m == 7) return "Iulie";
+            else if(m == 8) return "August";
+            else if(m == 9) return "Septembrie";
+            else if(m == 10) return "Octombrie";
+            else if(m == 11) return "Noiembrie";
+            else if(m == 12) return "Decembrie";
+            else return "null";
+        } catch(NumberFormatException nfe) {
+            nfe.printStackTrace();
+            return "null";
+        }
     }
 
-    public void setDate() {
+    public String getDate() {
         StringBuffer sb = new StringBuffer();
-        sb.append("Data: ");
-        sb.append(getDaysDate());
+        sb.append(Integer.parseInt(date.substring(0, 2)));
         sb.append(" ");
-        sb.append(getMonthDate());
+        sb.append(getDateMonth().toLowerCase());
         sb.append(" ");
-        sb.append(getYearDate());
-        sb.append(", ora ");
-        sb.append(getHourDate());
-        this.date = sb.toString();
+        sb.append(date.substring(6));
+
+        return sb.toString();
     }
 
     public String getCategory() {
@@ -132,45 +145,39 @@ public class Event implements Serializable {
         this.description = description;
     }
 
-    public double getTicketPrice() {
+    public int getTicketPrice() {
         return this.ticketPrice;
     }
 
-    public void setTicketPrice(double ticketPrice) {
+    public void setTicketPrice(int ticketPrice) {
         this.ticketPrice = ticketPrice;
     }
 
-    public String getDaysDate() {
-        return this.daysDate;
+    public String getHour() {
+        return this.hour;
     }
 
-    public void setDaysDate(String daysDate) {
-        this.daysDate = daysDate;
+    public void setHour(String hour) {
+        this.hour = hour;
     }
 
-    public String getMonthDate() {
-        return this.monthDate;
+    public String toString() {
+        StringBuffer sb = new StringBuffer("Titlu: ");
+        sb.append(getTitle());
+        sb.append("\nCuloare: ");
+        sb.append(getTitleColor().toString());
+        sb.append("\nLocatie: ");
+        sb.append(getLocation());
+        sb.append("\nData: ");
+        sb.append(getDate());
+        sb.append("\nOra: ");
+        sb.append(getHour());
+        sb.append("\nCategorie: ");
+        sb.append(getCategory());
+        sb.append("\nDescriere: ");
+        sb.append(getDescription());
+        sb.append("\nPret bilet: ");
+        sb.append(getTicketPrice());
+        return sb.toString();
     }
-
-    public void setMonthDate(String monthDate) {
-        this.monthDate = monthDate;
-    }
-
-    public int getYearDate() {
-        return this.yearDate;
-    }
-
-    public void setYearDate(int yearDate) {
-        this.yearDate = yearDate;
-    }
-
-    public String getHourDate() {
-        return this.hourDate;
-    }
-
-    public void setHourDate(String hourDate) {
-        this.hourDate = hourDate;
-    }
-    
-    
 }

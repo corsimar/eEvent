@@ -1,187 +1,193 @@
 package proiect;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import javax.swing.JOptionPane;
-
-
+@SuppressWarnings("unchecked")
 public class User implements Serializable {
-    Utils utile = new Utils();
-    private boolean isLogged;
     private String email;
     private String password;
+    private ArrayList<Integer> preferences;
     private String location;
-    private ArrayList<Integer> preference;
-    private ArrayList<Event> savedEvent;
-    private ArrayList<Ticket> boughtTickets;
-    
 
-    //constructor
-    User(){
-        this.preference = new ArrayList<Integer>();
-        this.savedEvent = new ArrayList<Event>();
-        this.boughtTickets = new ArrayList<Ticket>();
-    };
-
-    User(String email,String password){
+    public User(String email, String password, ArrayList<Integer> preferences, String location) {
         this.email = email;
         this.password = password;
-        this.preference = new ArrayList<Integer>();
-        this.savedEvent = new ArrayList<Event>();
-        this.boughtTickets = new ArrayList<Ticket>();
-    };
-
-
-    //adauga bilet cumparat
-    public void buyTicket(Ticket ticket){
-        getBoughtTickets().add(ticket);
+        this.preferences = preferences;
+        this.location = location;
     }
 
-    //sterge bilet cumparat
-
-    public void sellTicket(Ticket ticket){
-        if(getBoughtTickets()!=null){
-            if(getBoughtTickets().contains(ticket)){
-                for(int i=0;i<getBoughtTickets().size();i++){
-                    if(getBoughtTickets().get(i).equals(ticket)){
-                        getBoughtTickets().remove(i);
-                    }
-                }
-            }
-        }
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
     }
 
-
-
-
-    //adauga evenimente salvate
-
-    void addSavedEvent(Event event){
-        if(this.savedEvent.size() == 0){
-            this.savedEvent.add(event);
-        }
-        else if(this.savedEvent.contains(event) == false){
-            this.savedEvent.add(event);
-        }
+    public User(String password) {
+        this.password = password;
     }
 
-    //sterge eveniment salvat
-
-    void removeSavedEvent(Event event){
-        if(getSavedEvents()!=null){
-            if(getSavedEvents().contains(event)){
-                for(int i=0;i<getSavedEvents().size();i++){
-                    if(getSavedEvents().get(i).equals(event)){
-                        getSavedEvents().remove(i);
-                    }
-                }
-            }
-        }
+    public void addPreferences(ArrayList<Integer> preferences) {
+        this.preferences.clear();
+        this.preferences.addAll(preferences);
     }
 
-    
-
-    //adauga preferinte
-    void addPreference(int preference){
-        if(this.preference.size() == 0){
-            this.preference.add(preference);
+    public void addPreference(int preference) {
+        if(this.preferences.size() == 0) {
+            this.preferences.add(preference);
         }
-        else if(!this.preference.contains(preference)){
-            this.preference.add(preference);
+        else if(!this.preferences.contains(preference)) {
+            this.preferences.add(preference);
         }
     }
-
-    //sterge preferinte
-    
-    void removePreference(int preference){
-        if(getPreference().contains(preference)){
-            for (int i=0;i<getPreference().size();i++){
-                if(getPreference().get(i).equals(preference)){
-                    getPreference().remove(i);
-                }
-            }
-        }    
-    }
-
-    //citeste user
    
-    static ArrayList<User> readUsers(){
+    static ArrayList<User> readUsers() {
         try {
-            ObjectInputStream in = new ObjectInputStream(new FileInputStream("src//data//users.txt"));
+            StringBuffer path = new StringBuffer(System.getProperty("user.dir"));
+            path.append("\\src\\data\\users.txt");
+
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(path.toString()));
             ArrayList<User> users = (ArrayList<User>) in.readObject();
+            //System.out.println(users);
             return users;
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         catch(ClassNotFoundException e){
             e.printStackTrace();
         }
-        return null;
+        return new ArrayList<>();
     }
 
-    //salveaza user
-
-    static void saveUser(ArrayList<User> users){
+    public static void saveUser(User user) {
         try {
-            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("src//data//users.txt"));
+            StringBuffer path = new StringBuffer(System.getProperty("user.dir"));
+            path.append("\\src\\data\\users.txt");
+
+            ArrayList<User> users = readUsers();
+            int index = 0;
+            do {
+                if(user.email.equals(users.get(index).email)) break;
+                index++;
+            } while(index < users.size());
+            users.set(index, user);
+
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(path.toString()));
             out.writeObject(users);
             out.close();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
 
+    public void loadUser() {
+        ArrayList<User> users = readUsers();
+        for(int i = 0; i < users.size(); i++) {
+            if(users.get(i).email.equals(this.email)) {
+                this.preferences = users.get(i).preferences;
+                this.location = users.get(i).location;
+                break;
+            }
+        }
+    }
 
-    //logare
-    public boolean logIn(String email,String password){
-        if(userExists(email, password)){
+    public static void saveUsers(ArrayList<User> users) {
+        try {
+            StringBuffer path = new StringBuffer(System.getProperty("user.dir"));
+            path.append("\\src\\data\\users.txt");
+
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(path.toString()));
+            out.writeObject(users);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean login() {
+        if(userExists(this) && isPasswordCorrect(this)) {
+            loadUser();
             return true;
         }
         return false;
     }
 
-    //verifica daca exista deja
-    public static boolean userExists(String email,String password){
+    public boolean loginAsAdmin() {
+        boolean r = false;
+        try {
+            StringBuffer path = new StringBuffer(System.getProperty("user.dir"));
+            path.append("\\src\\data\\admin.txt");
+
+            BufferedReader file = new BufferedReader(new FileReader(path.toString()));
+            if(password.equals(file.readLine())) {
+                r = true;
+            }
+            else {
+                r = false;
+            }
+
+            file.close();
+            return r;
+        } catch(IOException ex) {
+            ex.printStackTrace();
+            return r;
+        }
+    }
+
+    public boolean changeAdminPassword(String pass) {
+        try {
+            StringBuffer path = new StringBuffer(System.getProperty("user.dir"));
+            path.append("\\src\\data\\admin.txt");
+
+            BufferedWriter file = new BufferedWriter(new FileWriter(path.toString()));
+            file.write(pass);
+            file.close();
+            return true;
+        } catch(IOException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean userExists(User user) {
         ArrayList<User> existentUsers = User.readUsers();
-        for(int i=0;i<existentUsers.size();i++){
-            if(existentUsers.get(i).getEmail().equalsIgnoreCase(email) && existentUsers.get(i).getPassword().equals(password)){
+        for(int i = 0; i < existentUsers.size(); i++) {
+            if(existentUsers.get(i).getEmail().equalsIgnoreCase(user.email)) {
                 return true;
             }
         }
         return false;
-    } 
-
-
-
-    //inregistrare
-
-    public static void registerUser(String email,String password){
-        if(userExists(email, password)){
-            JOptionPane.showMessageDialog(null,"Utilizatorul exista deja");
-        }
-        else{
-            ArrayList<User> users = User.readUsers();
-            users.add(new User(email,password));
-            User.saveUser(users);
-        }
     }
 
-    //set si get
-
-    public boolean getIsLogged(){
-        return this.isLogged;
+    public static boolean isPasswordCorrect(User user) {
+        ArrayList<User> existentUsers = User.readUsers();
+        for(int i = 0; i < existentUsers.size(); i++) {
+            if(existentUsers.get(i).getPassword().equals(user.password)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public void setIsLogged(){
-        this.isLogged = !this.isLogged;
+    public boolean isEmailValid() {
+        return (this.email.contains("@") && this.email.contains(".") && this.email.length() > 5);
+    }
+
+    public boolean isPasswordValid() {
+        return (this.password.length() >= 3);
+    }
+
+    public static void registerUser(User user) {
+        ArrayList<User> users = User.readUsers();
+        users.add(user);
+        User.saveUsers(users);
     }
 
     public String getEmail() {
@@ -189,9 +195,7 @@ public class User implements Serializable {
     }
 
     public void setEmail(String email) {
-        if(email.contains("@")){
-            this.email = email;
-        }
+        this.email = email;
     }
 
     public String getPassword() {
@@ -202,37 +206,28 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public ArrayList<Integer> getPreference() {
-        return this.preference;
+    public ArrayList<Integer> getPreferences() {
+        return this.preferences;
     }
-
 
     public String getLocation() {
         return this.location;
     }
 
-    public void setLocatie(String location) {
+    public void setLocation(String location) {
         this.location = location;
     }
 
-    //get evenimente salvate
-
-    public ArrayList<Event> getSavedEvents(){
-        return this.savedEvent;
-    }
-
-    //get bilete cumparate
-    public ArrayList<Ticket> getBoughtTickets(){
-        return this.boughtTickets;
-    }
-
-    //toString()
     public String toString(){
        StringBuffer sb = new StringBuffer();
        sb.append("Email: ");
-       sb.append(this.getEmail());
+       sb.append(getEmail());
        sb.append("\nPassword: ");
-       sb.append(password);
+       sb.append(getPassword());
+       sb.append("\nPreferences: ");
+       sb.append(getPreferences());
+       sb.append("\nLocation: ");
+       sb.append(getLocation());
        return sb.toString(); 
     }
 }
