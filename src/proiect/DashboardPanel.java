@@ -5,6 +5,10 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
 import java.awt.Font;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.awt.Color;
 
 public class DashboardPanel extends MyPanel {
@@ -15,13 +19,13 @@ public class DashboardPanel extends MyPanel {
         setBackground(Color.WHITE);
         setVisible(false);
 
-        int[] s = Utils.getStatistics();
         for(int i = 0; i < boxLabel.length; i++) {
             boxLabel[i] = new JLabel();
             boxLabel[i].setOpaque(true);
+            boxLabel[i].setBackground(Color.WHITE);
             boxLabel[i].setBorder(BorderFactory.createLineBorder(menuColor, 1, true));
 
-            boxTitle[i] = new JLabel(s[i] + "");
+            boxTitle[i] = new JLabel();
             boxTitle[i].setFont(new Font("Monospaced", Font.BOLD, fontTitleSize));
             boxTitle[i].setForeground(textColor);
             boxTitle[i].setHorizontalAlignment(SwingConstants.CENTER);
@@ -42,6 +46,31 @@ public class DashboardPanel extends MyPanel {
         boxInfo[1].setText("Evenimente active");
         boxInfo[2].setText("Bilete vandute");
 
+    }
+
+    public void readInfo() {
+        StringBuffer path = new StringBuffer(System.getProperty("user.dir"));
+        path.append("\\src\\data\\statistics.txt");
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(new File(path.toString())));
+            String line; int i = 0;
+            while((line = br.readLine()) != null) {
+                boxTitle[i].setText(line);
+                Main.info[i] = Integer.parseInt(line);
+                i++;
+            }
+            br.close();
+        } catch(IOException ex) {
+            ex.printStackTrace();
+        } catch(NumberFormatException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void updateInfo() {
+        for(int i = 0; i < boxTitle.length; i++) {
+            boxTitle[i].setText(Main.info[i] + "");
+        }
     }
 
     @Override

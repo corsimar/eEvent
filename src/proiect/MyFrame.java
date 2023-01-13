@@ -19,6 +19,7 @@ public abstract class MyFrame extends JFrame {
 
     public int frameW = 1200, frameH = 900;
     public int inputW = 300, inputH = 40, btnW = 140, btnH = 40, vLineW = 2, vLineH = 30, lineTextOffset = 16;
+    public int leftMargin = 32, rightMargin = 32, menuOffset = 8;
 
     public BufferedImage closeBtnBuff, maximizeBtnBuff, selectedBuff, upArrowBuff, downArrowBuff;
     public Image closeBtnImg, maximizeBtnImg, selectedImg, upArrowImg, downArrowImg;

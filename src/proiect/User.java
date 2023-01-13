@@ -17,12 +17,14 @@ public class User implements Serializable {
     private String password;
     private ArrayList<Integer> preferences;
     private String location;
+    private ArrayList<Event> tickets;
 
-    public User(String email, String password, ArrayList<Integer> preferences, String location) {
+    public User(String email, String password, ArrayList<Integer> preferences, String location, ArrayList<Event> tickets) {
         this.email = email;
         this.password = password;
         this.preferences = preferences;
         this.location = location;
+        this.tickets = tickets;
     }
 
     public User(String email, String password) {
@@ -47,6 +49,26 @@ public class User implements Serializable {
             this.preferences.add(preference);
         }
     }
+
+    public void addTickets(ArrayList<Event> tickets) {
+        this.tickets.clear();
+        this.tickets.addAll(tickets);
+    }
+
+    public ArrayList<Event> getTickets() {
+        return this.tickets;
+    }
+
+    public void removeTicket(Event event) {
+        this.tickets.remove(event);
+    }
+
+    public boolean ownsTicket(Event event) {
+        for(int i = 0; i < tickets.size(); i++) {
+            if(tickets.get(i).equals(event)) return true;
+        }
+        return false;
+    }
    
     static ArrayList<User> readUsers() {
         try {
@@ -58,7 +80,7 @@ public class User implements Serializable {
             //System.out.println(users);
             return users;
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         catch(ClassNotFoundException e){
             e.printStackTrace();
@@ -83,7 +105,7 @@ public class User implements Serializable {
             out.writeObject(users);
             out.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
@@ -93,6 +115,8 @@ public class User implements Serializable {
             if(users.get(i).email.equals(this.email)) {
                 this.preferences = users.get(i).preferences;
                 this.location = users.get(i).location;
+                this.tickets = users.get(i).tickets;
+                System.out.println(this.tickets.toString());
                 break;
             }
         }
@@ -107,7 +131,27 @@ public class User implements Serializable {
             out.writeObject(users);
             out.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+        }
+    }
+
+    public static void deleteEvent(Event event) {
+        try {
+            StringBuffer path = new StringBuffer(System.getProperty("user.dir"));
+            path.append("\\src\\data\\users.txt");
+
+            ArrayList<User> users = readUsers();
+            for(int i = 0; i < users.size(); i++) {
+                if(users.get(i).getTickets().contains(event)) {
+                    users.get(i).removeTicket(event);
+                }
+            }
+    
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(path.toString()));
+            out.writeObject(users);
+            out.close();
+        } catch (IOException e) {
+            //e.printStackTrace();
         }
     }
 
@@ -136,7 +180,7 @@ public class User implements Serializable {
             file.close();
             return r;
         } catch(IOException ex) {
-            ex.printStackTrace();
+            //ex.printStackTrace();
             return r;
         }
     }
@@ -228,6 +272,8 @@ public class User implements Serializable {
        sb.append(getPreferences());
        sb.append("\nLocation: ");
        sb.append(getLocation());
+       sb.append("\nTickets: ");
+       sb.append(tickets.toString());
        return sb.toString(); 
     }
 }

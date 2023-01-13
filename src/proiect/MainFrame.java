@@ -1,4 +1,5 @@
 package proiect;
+
 import java.awt.Dimension;
 import java.awt.Color;
 import java.awt.Font;
@@ -32,38 +33,35 @@ import javax.swing.text.PlainDocument;
 
 public class MainFrame extends MyFrame implements ActionListener {
     private int mouseX = -1, mouseY = -1, windowW, windowH;
-    private int leftMargin = 32, rightMargin = 32;
-
-    private User user = null;
-    private JPanel loginPanel;
-    private boolean login = true;
-    private JLabel loginText;
-    private JTextField emailInp;
-    private JPasswordField passInp;
-    private JButton confirmBtn, registerBtn, adminBtn, loginBtn, backBtn;
-    private JLabel verticalLine;
-    private PreferencePanel preferencePanel;
-    private LocationPanel locationPanel;
-    private JButton nextBtn;
 
     private JPanel topBar;
-    private JLabel title;
+    private MyLabel title;
     private JButton closeBtn, maximizeBtn, minimizeBtn;
     private boolean maximized = false;
     private Timer dragTimer;
 
+    private User user = null;
+    private JPanel loginPanel;
+    private boolean login = true;
+    private MyLabel loginText;
+    private JTextField emailInp;
+    private JPasswordField passInp;
+    private MyButton confirmBtn, registerBtn, adminBtn, loginBtn, backBtn;
+    private JLabel verticalLine;
+    private PreferencePanel preferencePanel;
+    private LocationPanel locationPanel;
+    private MyButton nextBtn;
+
     private JPanel menuBar;
-    private int menuOffset = 8;
-    private JButton selectedMenu;
+    private MyButton selectedMenu;
     private JLabel selectedCircle;
-    private JButton eventsBtn;
-    private JButton myAccountBtn, changePassBtn, prefBtn, disconnectBtn;
-    private JButton ticketsBtn;
+    private MyButton eventsBtn, myAccountBtn, changePassBtn, prefBtn, disconnectBtn;
     private EventsPanel eventsPanel;
+    private TicketPanel ticketPanel;
     private PasswordPanel passwordPanel;
 
     private JPanel adminBar;
-    private JButton panelBtn, admEventsBtn, addEventBtn, manageEventsBtn, menuAdmBtn, admChangePassBtn, admDisconnectBtn;
+    private MyButton panelBtn, admEventsBtn, addEventBtn, manageEventsBtn, menuAdmBtn, admChangePassBtn, admDisconnectBtn;
     private JComponent lastPanel;
     private DashboardPanel dashboardPanel;
     private AddEventPanel addEventPanel;
@@ -133,11 +131,7 @@ public class MainFrame extends MyFrame implements ActionListener {
         });
         add(topBar);
 
-        title = new JLabel("eEvent");
-        title.setFont(new Font("Monospaced", Font.BOLD, fontTitleSize));
-        title.setForeground(textColor);
-        title.setHorizontalAlignment(SwingConstants.LEFT);
-        title.setVerticalAlignment(SwingConstants.CENTER);
+        title = new MyLabel("eEvent", textColor, new Font("Monospaced", Font.BOLD, fontTitleSize), SwingConstants.LEFT, SwingConstants.CENTER);
         topBar.add(title);
 
         closeBtn = new JButton();
@@ -169,10 +163,7 @@ public class MainFrame extends MyFrame implements ActionListener {
         loginPanel.setBackground(Color.WHITE);
         add(loginPanel);
 
-        loginText = new JLabel("Autentificare");
-        loginText.setFont(new Font("Monospaced", Font.BOLD, fontTitleSize));
-        loginText.setForeground(textColor);
-        loginText.setHorizontalAlignment(SwingConstants.CENTER);
+        loginText = new MyLabel("Autentificare", textColor, new Font("Monospaced", Font.BOLD, fontTitleSize), SwingConstants.CENTER, -1);
         loginPanel.add(loginText);
 
         emailFocused = false; passFocused = false;
@@ -214,13 +205,7 @@ public class MainFrame extends MyFrame implements ActionListener {
         });
         loginPanel.add(passInp);
 
-        confirmBtn = new JButton("Confirma");
-        confirmBtn.setFont(new Font("Monospaced", Font.BOLD, fontMenuSize));
-        confirmBtn.setBackground(btnColor);
-        confirmBtn.setForeground(Color.white);
-        confirmBtn.setBorder(null);
-        confirmBtn.setFocusPainted(false);
-        confirmBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        confirmBtn = new MyButton("Confirma", new Font("Monospaced", Font.BOLD, fontMenuSize), btnColor, Color.WHITE, null, Cursor.HAND_CURSOR);
         confirmBtn.addActionListener(this);
         loginPanel.add(confirmBtn);
 
@@ -229,50 +214,26 @@ public class MainFrame extends MyFrame implements ActionListener {
         verticalLine.setOpaque(true);
         loginPanel.add(verticalLine);
 
-        registerBtn = new JButton("Creeaza cont nou");
-        registerBtn.setFont(new Font("Monospaced", Font.BOLD, fontMenuSize));
-        registerBtn.setForeground(textColor);
+        registerBtn = new MyButton("Creeaza cont nou", new Font("Monospaced", Font.BOLD, fontMenuSize), null, textColor, null, Cursor.HAND_CURSOR);
         registerBtn.setHorizontalAlignment(SwingConstants.RIGHT);
         registerBtn.setVerticalAlignment(SwingConstants.CENTER);
-        registerBtn.setContentAreaFilled(false);
-        registerBtn.setBorder(null);
-        registerBtn.setFocusPainted(false);
-        registerBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         registerBtn.addActionListener(this);
         loginPanel.add(registerBtn);
 
-        loginBtn = new JButton("Autentifica-te");
-        loginBtn.setFont(new Font("Monospaced", Font.BOLD, fontMenuSize));
-        loginBtn.setForeground(textColor);
+        loginBtn = new MyButton("Autentifica-te", new Font("Monospaced", Font.BOLD, fontMenuSize), null, textColor, null, Cursor.HAND_CURSOR);
         loginBtn.setHorizontalAlignment(SwingConstants.RIGHT);
         loginBtn.setVerticalAlignment(SwingConstants.CENTER);
-        loginBtn.setContentAreaFilled(false);
-        loginBtn.setBorder(null);
-        loginBtn.setFocusPainted(false);
-        loginBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         loginBtn.addActionListener(this);
         loginBtn.setVisible(false);
         loginPanel.add(loginBtn);
 
-        adminBtn = new JButton("Admin");
-        adminBtn.setFont(new Font("Monospaced", Font.BOLD, fontMenuSize));
-        adminBtn.setForeground(textColor);
+        adminBtn = new MyButton("Admin", new Font("Monospaced", Font.BOLD, fontMenuSize), null, textColor, null, Cursor.HAND_CURSOR);
         adminBtn.setHorizontalAlignment(SwingConstants.LEFT);
         adminBtn.setVerticalAlignment(SwingConstants.CENTER);
-        adminBtn.setContentAreaFilled(false);
-        adminBtn.setBorder(null);
-        adminBtn.setFocusPainted(false);
-        adminBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         adminBtn.addActionListener(this);
         loginPanel.add(adminBtn);
 
-        backBtn = new JButton("Inapoi");
-        backBtn.setFont(new Font("Monospaced", Font.BOLD, fontMenuSize));
-        backBtn.setBackground(btnColor);
-        backBtn.setForeground(Color.white);
-        backBtn.setBorder(null);
-        backBtn.setFocusPainted(false);
-        backBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        backBtn = new MyButton("Inapoi", new Font("Monospaced", Font.BOLD, fontMenuSize), btnColor, Color.WHITE, null, Cursor.HAND_CURSOR);
         backBtn.addActionListener(this);
         backBtn.setVisible(false);
         loginPanel.add(backBtn);
@@ -283,13 +244,7 @@ public class MainFrame extends MyFrame implements ActionListener {
         locationPanel = new LocationPanel();
         add(locationPanel);
 
-        nextBtn = new JButton("Urmator");
-        nextBtn.setFont(new Font("Monospaced", Font.BOLD, fontMenuSize));
-        nextBtn.setBackground(btnColor);
-        nextBtn.setForeground(Color.white);
-        nextBtn.setBorder(null);
-        nextBtn.setFocusPainted(false);
-        nextBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        nextBtn = new MyButton("Urmator", new Font("Monospaced", Font.BOLD, fontMenuSize), btnColor, Color.WHITE, null, Cursor.HAND_CURSOR);
         nextBtn.addActionListener(this);
         nextBtn.setVisible(false);
         add(nextBtn);
@@ -312,72 +267,36 @@ public class MainFrame extends MyFrame implements ActionListener {
         selectedCircle = new JLabel("");
         selectedCircle.setIcon(new ImageIcon(selectedImg));
 
-        eventsBtn = new JButton("Exploreaza");
-        eventsBtn.setFont(new Font("Monospaced", Font.BOLD, fontTitleSize));
-        eventsBtn.setForeground(textColor);
+        eventsBtn = new MyButton("Exploreaza", new Font("Monospaced", Font.BOLD, fontTitleSize), null, textColor, null, Cursor.HAND_CURSOR);
         eventsBtn.setHorizontalAlignment(SwingConstants.LEFT);
-        eventsBtn.setContentAreaFilled(false);
-        eventsBtn.setBorder(null);
-        eventsBtn.setFocusPainted(false);
-        eventsBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         eventsBtn.addActionListener(this);
         menuBar.add(eventsBtn);
 
-        myAccountBtn = new JButton("Contul Meu");
-        myAccountBtn.setFont(new Font("Monospaced", Font.BOLD, fontTitleSize));
-        myAccountBtn.setForeground(textColor);
+        myAccountBtn = new MyButton("Contul meu", new Font("Monospaced", Font.BOLD, fontTitleSize), null, textColor, null, -1);
         myAccountBtn.setHorizontalAlignment(SwingConstants.LEFT);
-        myAccountBtn.setContentAreaFilled(false);
-        myAccountBtn.setBorder(null);
         myAccountBtn.setFocusPainted(false);
         menuBar.add(myAccountBtn);
 
-        changePassBtn = new JButton("Schimba parola");
-        changePassBtn.setFont(new Font("Monospaced", Font.PLAIN, fontMenuSize));
-        changePassBtn.setForeground(textColor);
+        changePassBtn = new MyButton("Schimba parola", new Font("Monospaced", Font.PLAIN, fontMenuSize), null, textColor, null, Cursor.HAND_CURSOR);
         changePassBtn.setHorizontalAlignment(SwingConstants.LEFT);
-        changePassBtn.setContentAreaFilled(false);
-        changePassBtn.setBorder(null);
-        changePassBtn.setFocusPainted(false);
-        changePassBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         changePassBtn.addActionListener(this);
         menuBar.add(changePassBtn);
 
-        prefBtn = new JButton("Preferinte");
-        prefBtn.setFont(new Font("Monospaced", Font.PLAIN, fontMenuSize));
-        prefBtn.setForeground(textColor);
+        prefBtn = new MyButton("Preferinte", new Font("Monospaced", Font.PLAIN, fontMenuSize), null, textColor, null, Cursor.HAND_CURSOR);
         prefBtn.setHorizontalAlignment(SwingConstants.LEFT);
-        prefBtn.setContentAreaFilled(false);
-        prefBtn.setBorder(null);
-        prefBtn.setFocusPainted(false);
-        prefBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         prefBtn.addActionListener(this);
         menuBar.add(prefBtn);
 
-        disconnectBtn = new JButton("Deconecteaza-te");
-        disconnectBtn.setFont(new Font("Monospaced", Font.PLAIN, fontMenuSize));
-        disconnectBtn.setForeground(textColor);
+        disconnectBtn = new MyButton("Deconecteaza-te", new Font("Monospaced", Font.PLAIN, fontMenuSize), null, textColor, null, Cursor.HAND_CURSOR);
         disconnectBtn.setHorizontalAlignment(SwingConstants.LEFT);
-        disconnectBtn.setContentAreaFilled(false);
-        disconnectBtn.setBorder(null);
-        disconnectBtn.setFocusPainted(false);
-        disconnectBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         disconnectBtn.addActionListener(this);
         menuBar.add(disconnectBtn);
 
-        ticketsBtn = new JButton("Bilete");
-        ticketsBtn.setFont(new Font("Monospaced", Font.BOLD, fontTitleSize));
-        ticketsBtn.setForeground(textColor);
-        ticketsBtn.setHorizontalAlignment(SwingConstants.LEFT);
-        ticketsBtn.setContentAreaFilled(false);
-        ticketsBtn.setBorder(null);
-        ticketsBtn.setFocusPainted(false);
-        ticketsBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        ticketsBtn.addActionListener(this);
-        menuBar.add(ticketsBtn);
-
         eventsPanel = new EventsPanel();
         add(eventsPanel);
+
+        ticketPanel = new TicketPanel();
+        add(ticketPanel);
 
         passwordPanel = new PasswordPanel();
         add(passwordPanel);
@@ -390,82 +309,43 @@ public class MainFrame extends MyFrame implements ActionListener {
         adminBar.setVisible(false);
         add(adminBar);
 
-        panelBtn = new JButton("Panou");
-        panelBtn.setFont(new Font("Monospaced", Font.BOLD, fontTitleSize));
-        panelBtn.setForeground(textColor);
+        panelBtn = new MyButton("Panou", new Font("Monospaced", Font.BOLD, fontTitleSize), null, textColor, null, Cursor.HAND_CURSOR);
         panelBtn.setHorizontalAlignment(SwingConstants.LEFT);
-        panelBtn.setContentAreaFilled(false);
-        panelBtn.setBorder(null);
-        panelBtn.setFocusPainted(false);
-        panelBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         panelBtn.addActionListener(this);
         adminBar.add(panelBtn);
 
-        admEventsBtn = new JButton("Evenimente");
-        admEventsBtn.setFont(new Font("Monospaced", Font.BOLD, fontTitleSize));
-        admEventsBtn.setForeground(textColor);
+        admEventsBtn = new MyButton("Evenimente", new Font("Monospaced", Font.BOLD, fontTitleSize), null, textColor, null, -1);
         admEventsBtn.setHorizontalAlignment(SwingConstants.LEFT);
-        admEventsBtn.setContentAreaFilled(false);
-        admEventsBtn.setBorder(null);
-        admEventsBtn.setFocusPainted(false);
         adminBar.add(admEventsBtn);
 
-        addEventBtn = new JButton("Adauga");
-        addEventBtn.setFont(new Font("Monospaced", Font.PLAIN, fontMenuSize));
-        addEventBtn.setForeground(textColor);
+        addEventBtn = new MyButton("Adauga", new Font("Monospaced", Font.PLAIN, fontMenuSize), null, textColor, null, Cursor.HAND_CURSOR);
         addEventBtn.setHorizontalAlignment(SwingConstants.LEFT);
-        addEventBtn.setContentAreaFilled(false);
-        addEventBtn.setBorder(null);
-        addEventBtn.setFocusPainted(false);
-        addEventBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         addEventBtn.addActionListener(this);
         adminBar.add(addEventBtn);
 
-        manageEventsBtn = new JButton("Administreaza");
-        manageEventsBtn.setFont(new Font("Monospaced", Font.PLAIN, fontMenuSize));
-        manageEventsBtn.setForeground(textColor);
+        manageEventsBtn = new MyButton("Administreaza", new Font("Monospaced", Font.PLAIN, fontMenuSize), null, textColor, null, Cursor.HAND_CURSOR);
         manageEventsBtn.setHorizontalAlignment(SwingConstants.LEFT);
-        manageEventsBtn.setContentAreaFilled(false);
-        manageEventsBtn.setBorder(null);
-        manageEventsBtn.setFocusPainted(false);
-        manageEventsBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         manageEventsBtn.addActionListener(this);
         adminBar.add(manageEventsBtn);
 
-        menuAdmBtn = new JButton("Admin");
-        menuAdmBtn.setFont(new Font("Monospaced", Font.BOLD, fontTitleSize));
-        menuAdmBtn.setForeground(textColor);
+        menuAdmBtn = new MyButton("Admin", new Font("Monospaced", Font.BOLD, fontTitleSize), null, textColor, null, -1);
         menuAdmBtn.setHorizontalAlignment(SwingConstants.LEFT);
-        menuAdmBtn.setContentAreaFilled(false);
-        menuAdmBtn.setBorder(null);
-        menuAdmBtn.setFocusPainted(false);
         adminBar.add(menuAdmBtn);
 
-        admChangePassBtn = new JButton("Schimba parola");
-        admChangePassBtn.setFont(new Font("Monospaced", Font.PLAIN, fontMenuSize));
-        admChangePassBtn.setForeground(textColor);
+        admChangePassBtn = new MyButton("Schimba parola", new Font("Monospaced", Font.PLAIN, fontMenuSize), null, textColor, null, Cursor.HAND_CURSOR);
         admChangePassBtn.setHorizontalAlignment(SwingConstants.LEFT);
-        admChangePassBtn.setContentAreaFilled(false);
-        admChangePassBtn.setBorder(null);
-        admChangePassBtn.setFocusPainted(false);
-        admChangePassBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         admChangePassBtn.addActionListener(this);
         adminBar.add(admChangePassBtn);
 
-        admDisconnectBtn = new JButton("Deconectare");
-        admDisconnectBtn.setFont(new Font("Monospaced", Font.PLAIN, fontMenuSize));
-        admDisconnectBtn.setForeground(textColor);
+        admDisconnectBtn = new MyButton("Deconectare", new Font("Monospaced", Font.PLAIN, fontMenuSize), null, textColor, null, Cursor.HAND_CURSOR);
         admDisconnectBtn.setHorizontalAlignment(SwingConstants.LEFT);
-        admDisconnectBtn.setContentAreaFilled(false);
-        admDisconnectBtn.setBorder(null);
-        admDisconnectBtn.setFocusPainted(false);
-        admDisconnectBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         admDisconnectBtn.addActionListener(this);
         adminBar.add(admDisconnectBtn);
     }
 
     void initAdminPanel() {
         dashboardPanel = new DashboardPanel();
+        dashboardPanel.readInfo();
         add(dashboardPanel);
 
         addEventPanel = new AddEventPanel();
@@ -528,11 +408,8 @@ public class MainFrame extends MyFrame implements ActionListener {
             fm = eventsBtn.getFontMetrics(eventsBtn.getFont());
             eventsBtn.setBounds(leftMargin, menuOffset * 3, fm.stringWidth(eventsBtn.getText()), fm.getHeight());
 
-            fm = ticketsBtn.getFontMetrics(ticketsBtn.getFont());
-            ticketsBtn.setBounds(leftMargin, eventsBtn.getBounds().y + eventsBtn.getBounds().height + menuOffset * 3, fm.stringWidth(ticketsBtn.getText()), fm.getHeight());
-
             fm = myAccountBtn.getFontMetrics(myAccountBtn.getFont());
-            myAccountBtn.setBounds(leftMargin, ticketsBtn.getBounds().y + ticketsBtn.getBounds().height + menuOffset * 3, fm.stringWidth(myAccountBtn.getText()), fm.getHeight());
+            myAccountBtn.setBounds(leftMargin, eventsBtn.getBounds().y + eventsBtn.getBounds().height + menuOffset * 3, fm.stringWidth(myAccountBtn.getText()), fm.getHeight());
             fm = changePassBtn.getFontMetrics(changePassBtn.getFont());
             changePassBtn.setBounds(leftMargin, myAccountBtn.getBounds().y + myAccountBtn.getBounds().height + menuOffset, fm.stringWidth(changePassBtn.getText()), fm.getHeight());
             fm = prefBtn.getFontMetrics(prefBtn.getFont());
@@ -550,6 +427,10 @@ public class MainFrame extends MyFrame implements ActionListener {
             eventsPanel.setPanelH(windowH, topBar.getBounds().height);
             eventsPanel.resizeUI();
             eventsPanel.resizeScroll(topBar.getBounds().height);
+        }
+        if(ticketPanel.isVisible()) {
+            ticketPanel.setBounds(0, topBar.getBounds().height, windowW, windowH - topBar.getBounds().height);
+            ticketPanel.resizeUI();
         }
         if(passwordPanel.isVisible()) {
             passwordPanel.setBounds(menuBar.getBounds().width, topBar.getBounds().height, windowW - menuBar.getBounds().width, windowH - topBar.getBounds().height);
@@ -649,6 +530,32 @@ public class MainFrame extends MyFrame implements ActionListener {
         resizeUI();
     }
 
+    public void showTicket(int ticketID) {
+        ticketPanel.setVisible(true);
+        menuBar.setVisible(false);
+        eventsPanel.setVisible(false);
+        ticketPanel.setTicket(user, eventsPanel.getTicket(ticketID), user.ownsTicket(eventsPanel.getTicket(ticketID)));
+        resizeUI();
+    }
+
+    public void buyTicket(Event event) {
+        if(!user.getTickets().contains(event)) {
+            ArrayList<Event> arr = new ArrayList<Event>();
+            arr.addAll(user.getTickets());
+            arr.add(event);
+            user.addTickets(arr);
+            User.saveUser(user);
+            eventsPanel.buyTicket(event);
+        }
+    }
+
+    public void closeTicket() {
+        menuBar.setVisible(true);
+        eventsPanel.setVisible(true);
+        ticketPanel.setVisible(false);
+        resizeUI();
+    }
+
     private void handleMenuBar(ActionEvent e) {
         if(lastPanel == preferencePanel) {
             user.addPreferences(preferencePanel.getOptions());
@@ -659,10 +566,12 @@ public class MainFrame extends MyFrame implements ActionListener {
             eventsPanel.setVisible(true);
             lastPanel = eventsPanel;
             
+            eventsPanel.setUser(user);
+            eventsPanel.setTickets(user.getTickets());
             if(!eventsPanel.cardsCreated()) eventsPanel.createCardEvents();
+            else eventsPanel.resetAll();
             resizeUI();
             eventsPanel.setPanelH(frameH, topBar.getBounds().height);
-            eventsPanel.appendCardEvent();
             eventsPanel.resizeUI();
             eventsPanel.resetScroll(topBar.getBounds().height);
         }
@@ -690,6 +599,7 @@ public class MainFrame extends MyFrame implements ActionListener {
         if(lastPanel != null && e.getSource() != admDisconnectBtn) lastPanel.setVisible(false);
         if(e.getSource() == panelBtn) {
             dashboardPanel.setVisible(true);
+            dashboardPanel.updateInfo();
             lastPanel = dashboardPanel;
 
             resizeUI();
@@ -820,7 +730,7 @@ public class MainFrame extends MyFrame implements ActionListener {
                 }
                 else {
                     if(loginText.getText().equals("Inregistrare")) {
-                        user = new User(emailInp.getText(), new String(passInp.getPassword()), new ArrayList<Integer>(), "");
+                        user = new User(emailInp.getText(), new String(passInp.getPassword()), new ArrayList<Integer>(), "", new ArrayList<Event>());
                         if(user.isEmailValid()) {
                             if(passInp.getEchoChar() != ((char)0)) {
                                 if(user.isPasswordValid()) {
@@ -902,15 +812,16 @@ public class MainFrame extends MyFrame implements ActionListener {
                 locationPanel.resetLocation();
                 User.registerUser(user);
                 loginUser();
+                Main.saveInfo(0, true);
                 JOptionPane.showMessageDialog(null, "Contul a fost creat cu succes!");
             }
         }
-        else if(e.getSource() == eventsBtn || e.getSource() == ticketsBtn || e.getSource() == changePassBtn || e.getSource() == prefBtn) {
+        else if(e.getSource() == eventsBtn || e.getSource() == changePassBtn || e.getSource() == prefBtn) {
             if(selectedMenu != null) {
                 resetMenuBar();
             }
 
-            selectedMenu = ((JButton)e.getSource());
+            selectedMenu = ((MyButton)e.getSource());
             selectedCircle.setBounds(((JButton)e.getSource()).getBounds().x, ((JButton)e.getSource()).getBounds().y, selectedImg.getWidth(selectedCircle), selectedImg.getHeight(selectedCircle));
             selectedCircle.setBounds(selectedCircle.getBounds().x - leftMargin / 2 - selectedImg.getWidth(selectedCircle) / 2, selectedCircle.getBounds().y + (eventsBtn.getBounds().height - selectedCircle.getBounds().height) / 2, selectedImg.getWidth(selectedCircle), selectedImg.getHeight(selectedCircle));
             ((JButton)e.getSource()).setForeground(btnColor);
@@ -925,7 +836,7 @@ public class MainFrame extends MyFrame implements ActionListener {
                 resetMenuBar();
             }
 
-            selectedMenu = ((JButton)e.getSource());
+            selectedMenu = ((MyButton)e.getSource());
             selectedCircle.setBounds(((JButton)e.getSource()).getBounds().x, ((JButton)e.getSource()).getBounds().y, selectedImg.getWidth(selectedCircle), selectedImg.getHeight(selectedCircle));
             selectedCircle.setBounds(selectedCircle.getBounds().x - leftMargin / 2 - selectedImg.getWidth(selectedCircle) / 2, selectedCircle.getBounds().y + (selectedMenu.getBounds().height - selectedCircle.getBounds().height) / 2, selectedImg.getWidth(selectedCircle), selectedImg.getHeight(selectedCircle));
             ((JButton)e.getSource()).setForeground(btnColor);

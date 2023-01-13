@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
 import java.awt.Font;
@@ -22,7 +23,7 @@ public class AEventsPanel extends MyPanel implements ActionListener {
     private int cardW, cardH = 300, panelH;
     private JButton scrollUpBtn, scrollDownBtn;
     private int scrollLevel = 0, scrollStep;
-    private boolean created = false;
+    private boolean created = false, deleted = false;
 
     public AEventsPanel() {
         setLayout(null);
@@ -106,10 +107,14 @@ public class AEventsPanel extends MyPanel implements ActionListener {
 
     public void appendCardEvent() {
         ArrayList<Event> arr = Event.readEvents();
-        int diff = arr.size() - eventCard.size();
+        int diff = 0, s = 0;
+        if(eventCard != null) {
+            s = eventCard.size();
+            diff = arr.size() - s;
+        }
         if(diff > 0) {
             for(int i = 0; i < diff; i++) {
-                eventCard.add(new EventCard(arr.get(eventCard.size() + i)));
+                eventCard.add(new EventCard(arr.get(s + i)));
                 add(eventCard.get(eventCard.size() - 1));
                 addCardOptions(eventCard.get(eventCard.size() - 1));
             }
@@ -124,10 +129,12 @@ public class AEventsPanel extends MyPanel implements ActionListener {
             eventCard.get(i).setBounds(leftMargin, y + panelH / 4 - (cardH + btnH + menuOffset * 3) / 2, cardW, cardH);
             eventCard.get(i).resizeUI();
             eventOption.get(i).setBounds(eventCard.get(i).getBounds().x + eventCard.get(i).getBounds().width - btnW, eventCard.get(i).getBounds().y + eventCard.get(i).getBounds().height + menuOffset * 3, btnW, btnH);
+            eventOption.get(i).setName(i + "");
             if(i + 1 < eventCard.size()) {
                 eventCard.get(i + 1).setBounds(leftMargin, y + panelH * 3 / 4 - (cardH + btnH + menuOffset * 3) / 2, cardW, cardH);
                 eventCard.get(i + 1).resizeUI();
                 eventOption.get(i + 1).setBounds(eventCard.get(i + 1).getBounds().x + eventCard.get(i + 1).getBounds().width - btnW, eventCard.get(i + 1).getBounds().y + eventCard.get(i + 1).getBounds().height + menuOffset * 3, btnW, btnH);
+                eventOption.get(i + 1).setName((i + 1) + "");
             }
             y += panelH;
         }
@@ -142,11 +149,25 @@ public class AEventsPanel extends MyPanel implements ActionListener {
         btn.setBorder(null);
         btn.setFocusPainted(false);
         btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        int btnID = eventOption.size() + 1;
         btn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                System.out.println(btnID);                
+                boolean response = Event.deleteEvent(Integer.parseInt(btn.getName()));
+                if(response) {
+                    remove(card);
+                    remove(btn);
+                    repaint();
+                    User.deleteEvent(card.getEvent());
+                    eventCard.remove(card);
+                    eventOption.remove(btn);
+                    deleted = true;
+                    resizeUI();
+                    Main.saveInfo(1, false);
+                    JOptionPane.showMessageDialog(null, "Evenimentul a fost sters cu succes!");
+                }
+                else {
+                    JOptionPane.showMessageDialog(null, "Evenimentul nu a putut fi sters!");
+                }
             }
         });
         btn.setBounds(card.getBounds().x + card.getBounds().width - btnW, card.getBounds().y + card.getBounds().height + menuOffset * 3, btnW, btnH);
@@ -175,10 +196,16 @@ public class AEventsPanel extends MyPanel implements ActionListener {
     @Override
     public void resizeUI() {
         noElementsFoundL.setBounds(0, 0, getBounds().width, getBounds().height);
-        scrollUpBtn.setBounds(getBounds().width - btnH - leftMargin, leftMargin, btnH, btnH);
-        scrollDownBtn.setBounds(getBounds().width - btnH - leftMargin, panelH - btnH - leftMargin, btnH, btnH);
+        if(!deleted) {
+            scrollUpBtn.setBounds(getBounds().width - btnH - leftMargin, leftMargin, btnH, btnH);
+            scrollDownBtn.setBounds(getBounds().width - btnH - leftMargin, panelH - btnH - leftMargin, btnH, btnH);
+        }
 
         if(cardsCreated()) resizeCardEvents();
+        if(deleted && scrollLevel > (eventCard.size() - 1) / 2) {
+            scrollUp();
+            deleted = false;
+        }
     }
 
     @Override

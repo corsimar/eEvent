@@ -23,6 +23,8 @@ public class EventsPanel extends MyPanel implements ActionListener {
     private JButton scrollUpBtn, scrollDownBtn;
     private int scrollLevel = 0, scrollStep;
     private boolean created = false;
+    private User user;
+    private ArrayList<Event> tickets;
 
     public EventsPanel() {
         setLayout(null);
@@ -30,6 +32,7 @@ public class EventsPanel extends MyPanel implements ActionListener {
         setVisible(false);
 
         loadImages();
+        tickets = new ArrayList<>();
         
         noElementsFoundL = new JLabel("Nu au fost adaugate evenimente!");
         noElementsFoundL.setFont(new Font("Monospace", Font.BOLD, fontTitleSize));
@@ -82,8 +85,34 @@ public class EventsPanel extends MyPanel implements ActionListener {
         scrollLevel = scroll;
     }
 
+    public void sortEvents(ArrayList<Event> arr) {
+        boolean ok;
+        do {
+            ok = false;
+            for(int i = 0; i < arr.size() - 1; i++) {
+                if(isTicketBought(arr.get(i)) && !isTicketBought(arr.get(i + 1))) {
+                    Event e = arr.get(i);
+                    arr.set(i, arr.get(i + 1));
+                    arr.set(i + 1, e);
+                    ok = true;
+                }
+                else {
+                    if((isTicketBought(arr.get(i)) && isTicketBought(arr.get(i + 1))) || (!isTicketBought(arr.get(i)) && !isTicketBought(arr.get(i + 1)))) {
+                        if(arr.get(i).getRelevance(user) < arr.get(i + 1).getRelevance(user)) {
+                            Event e = arr.get(i);
+                            arr.set(i, arr.get(i + 1));
+                            arr.set(i + 1, e);
+                            ok = true;
+                        }
+                    }
+                }
+            }
+        } while(ok);
+    }
+
     public void createCardEvents() {
         ArrayList<Event> arr = Event.readEvents();
+        sortEvents(arr);
         if(arr.size() > 0) {
             scrollUpBtn.setVisible(true);
             scrollDownBtn.setVisible(true);
@@ -106,12 +135,16 @@ public class EventsPanel extends MyPanel implements ActionListener {
 
     public void appendCardEvent() {
         ArrayList<Event> arr = Event.readEvents();
-        int diff = arr.size() - eventCard.size();
+        int diff = 0, s = 0;
+        if(eventCard != null) {
+            s = eventCard.size();
+            diff = arr.size() - s;
+        }
         if(diff > 0) {
             for(int i = 0; i < diff; i++) {
-                eventCard.add(new EventCard(arr.get(eventCard.size() + i)));
-                add(eventCard.get(eventCard.size() - 1));
-                addCardOptions(eventCard.get(eventCard.size() - 1));
+                eventCard.add(new EventCard(arr.get(s + i)));
+                add(eventCard.get(s - 1));
+                addCardOptions(eventCard.get(s - 1));
             }
         }
     }
@@ -137,21 +170,70 @@ public class EventsPanel extends MyPanel implements ActionListener {
     private void addCardOptions(EventCard card) {
         JButton btn = new JButton("Bilet");
         btn.setFont(new Font("Monospaced", Font.BOLD, fontMenuSize));
-        btn.setBackground(btnColor);
+        if(!isTicketBought(card.getEvent())) btn.setBackground(btnColor);
+        else {
+            btn.setText("Cumparat");
+            btn.setBackground(btnLightColor);
+        }
         btn.setForeground(Color.WHITE);
         btn.setBorder(null);
         btn.setFocusPainted(false);
         btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        int btnID = eventOption.size() + 1;
+        int ticketID = eventOption.size();
         btn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                System.out.println(btnID);                
+                Main.ticketClicked(ticketID);
             }
         });
         btn.setBounds(card.getBounds().x + card.getBounds().width - btnW, card.getBounds().y + card.getBounds().height + menuOffset * 3, btnW, btnH);
         add(btn);
         eventOption.add(btn);
+    }
+
+    public void resetAll() {
+        for(int i = 0; i < eventCard.size(); i++) remove(eventCard.get(i));
+        eventCard.clear();
+        for(int i = 0; i < eventOption.size(); i++) remove(eventOption.get(i));
+        eventOption.clear();
+        createCardEvents();
+        repaint();
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setTickets(ArrayList<Event> arr) {
+        this.tickets.clear();
+        this.tickets.addAll(arr);
+    }
+
+    public Event getTicket(int ticketID) {
+        return eventCard.get(ticketID).getEvent();
+    }
+
+    public boolean isTicketBought(Event event) {
+        for(int i = 0; i < tickets.size(); i++) {
+            if(tickets.get(i).equals(event)) return true;
+        }
+        return false;
+    }
+
+    public void buyTicket(Event event) {
+        int index = -1;
+        for(int i = 0; i < eventCard.size(); i++) {
+            if(eventCard.get(i).getEvent().equals(event)) {
+                index = i;
+                break;
+            }
+        }
+        if(index >= 0) {
+            tickets.add(event);
+            eventOption.get(index).setText("Cumparat");
+            eventOption.get(index).setBackground(btnLightColor);
+            Main.saveInfo(2, true);
+        }
     }
 
     private void scrollUp() {

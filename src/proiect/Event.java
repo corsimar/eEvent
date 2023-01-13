@@ -6,7 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.awt.*;
+import java.awt.Color;
 
 @SuppressWarnings("unchecked")
 public class Event implements Serializable {
@@ -24,7 +24,6 @@ public class Event implements Serializable {
         this.title = title; this.titleColor = titleColor; this.location = location; this.date = date; this.hour = hour; this.category = category; this.description = description; this.ticketPrice = ticketPrice;
     }
 
-    //Relevanta
     public int getRelevance(User user) {
         this.relevance = 0;
         if(user.getLocation() == this.location) {
@@ -51,7 +50,7 @@ public class Event implements Serializable {
             out.writeObject(events);
             out.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
     
@@ -65,35 +64,43 @@ public class Event implements Serializable {
             in.close();
             return events;
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         return new ArrayList<>();
     }
 
-    public String getTitle() {
-        return this.title;
+    public static boolean deleteEvent(int eventID) {
+        try {
+            StringBuffer path = new StringBuffer(System.getProperty("user.dir"));
+            path.append("\\src\\data\\events.txt");
+
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(path.toString()));
+            ArrayList<Event> events = readEvents();
+            in.close();
+            events.remove(eventID);
+
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(path.toString()));
+            if(events.size() > 0) out.writeObject(events);
+            out.close();
+
+            return true;
+        } catch(IOException ex) {
+            return false;
+        }
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public String getTitle() {
+        return this.title;
     }
 
     public Color getTitleColor() {
         return this.titleColor;
     }
 
-    public void setTitleColor(Color titleColor) {
-        this.titleColor = titleColor;
-    }
-
     public String getLocation() {
         return this.location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
     }
 
     public String getDateMonth() {
@@ -133,32 +140,37 @@ public class Event implements Serializable {
         return this.category;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
     public String getDescription() {
         return this.description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public int getTicketPrice() {
         return this.ticketPrice;
     }
 
-    public void setTicketPrice(int ticketPrice) {
-        this.ticketPrice = ticketPrice;
-    }
-
     public String getHour() {
         return this.hour;
     }
 
-    public void setHour(String hour) {
-        this.hour = hour;
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null) return false;
+        return (this.getTitle().equals(((Event)obj).getTitle()));
+    }
+
+    public String getTicket() {
+        StringBuffer sb = new StringBuffer(getTitle());
+        sb.append("\nLocatie: ");
+        sb.append(getLocation());
+        sb.append("\nData: ");
+        sb.append(getDate());
+        sb.append(", la ora ");
+        sb.append(getHour());
+        sb.append("\nCategorie: ");
+        sb.append(getCategory());
+        sb.append("\nPret: ");
+        sb.append(getTicketPrice());
+        return sb.toString();
     }
 
     public String toString() {

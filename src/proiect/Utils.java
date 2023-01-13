@@ -1,7 +1,4 @@
 package proiect;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class Utils {
@@ -67,25 +64,6 @@ public class Utils {
         add("Valcea");
         add("Vrancea");
     }};
-
-    public static int[] getStatistics() {
-        int[] r = new int[] { 0, 0, 0 };
-        try {
-            StringBuffer path = new StringBuffer(System.getProperty("user.dir"));
-            path.append("\\src\\data\\statistics.txt");
-
-            BufferedReader file = new BufferedReader(new FileReader(path.toString()));
-            String[] split = file.readLine().split("~");
-            for(int i = 0; i < r.length; i++)
-                r[i] = Integer.parseInt(split[i]);
-            
-            file.close();
-            return r;
-        } catch(IOException ex) {
-            ex.printStackTrace();
-            return r;
-        }
-    }
 
     public static String getDateMonth(String date) {
         try {

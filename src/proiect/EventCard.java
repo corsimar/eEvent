@@ -9,7 +9,7 @@ import java.awt.Color;
 import java.awt.Font;
 
 public class EventCard extends MyPanel {
-
+    private Event event;
     private JLabel title;
     private JLabel date;
     private JLabel category;
@@ -17,6 +17,7 @@ public class EventCard extends MyPanel {
     private JLabel ticketPrice;
 
     public EventCard(Event event) {
+        this.event = event;
         setLayout(null);
         setBackground(Color.WHITE);
         setBorder(BorderFactory.createLineBorder(menuColor, 1, true));
@@ -74,6 +75,34 @@ public class EventCard extends MyPanel {
         ticketPrice.setHorizontalAlignment(SwingConstants.LEFT);
         ticketPrice.setVerticalAlignment(SwingConstants.TOP);
         add(ticketPrice);
+    }
+
+    public Event getEvent() {
+        return this.event;
+    }
+
+    public String getTitle() {
+        return this.event.getTitle();
+    }
+
+    public Color getTitleColor() {
+        return this.event.getTitleColor();
+    }
+
+    public String getEventLocation() {
+        return this.event.getLocation();
+    }
+
+    public String getDate() {
+        return this.date.getText();
+    }
+
+    public String getCategory() {
+        return this.event.getCategory();
+    }
+
+    public int getPrice() {
+        return this.event.getTicketPrice();
     }
 
     @Override

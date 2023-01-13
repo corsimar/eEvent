@@ -292,7 +292,6 @@ public class AddEventPanel extends MyPanel implements ActionListener {
         FontMetrics fm;
 
         panelTitle.setBounds(0, menuOffset * 3, getBounds().width, fontMenuSize * 2);
-        System.out.println(panelTitle.getBounds());
 
         fm = addPriceL.getFontMetrics(addPriceL.getFont());
         int textW = fm.stringWidth(addPriceL.getText());
@@ -397,6 +396,7 @@ public class AddEventPanel extends MyPanel implements ActionListener {
                 dateSelected, hour.toString(), addCategoryCB.getSelectedItem().toString(), addDescriptionInp.getText(), (Integer)addPriceInp.getValue());
 
                 Event.saveEvent(event);
+                Main.saveInfo(1, true);
                 JOptionPane.showMessageDialog(null, "Evenimentul a fost adaugat cu succes!");
                 clearEventForm();
             }

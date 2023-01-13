@@ -97,12 +97,12 @@ public class PreferencePanel extends MyPanel implements ActionListener {
 
     public void setPreferences(ArrayList<Integer> pref) {
         resetPreferences();
-        System.out.println(pref);
         options.addAll(pref);
         for(int i = 0; i < options.size(); i++) {
             int btnIndex = getButtonIndex(Utils.categories.get(options.get(i)), false);
             addPreference(btnIndex);
         }
+        updateButtons();
     }
 
     public void resetPreferences() {

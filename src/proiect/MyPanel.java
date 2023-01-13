@@ -13,6 +13,7 @@ public abstract class MyPanel extends JPanel {
     public Color menuColor = Color.decode("#D9D9D9");
     public Color textColor = Color.decode("#141414");
     public Color btnColor = Color.decode("#4D88FF");
+    public Color btnLightColor = Color.decode("#66BAFF");
 
     public int fontTitleSize = 21;
     public int fontMenuSize = 17;
