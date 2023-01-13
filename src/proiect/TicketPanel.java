@@ -164,7 +164,7 @@ public class TicketPanel extends MyPanel implements ActionListener {
     class ControllerTicketPanel implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             if(e.getSource() == buyBtn) {
-                buyBtn.setVisible(false); backBtn.setVisible(false);
+                buyBtn.setVisible(false); backBtn.setVisible(false); fileBtn.setVisible(false);
                 PrinterJob printer = PrinterJob.getPrinterJob();
                 Book book = new Book();
                 book.append(new Printer(), printer.defaultPage());
@@ -172,14 +172,14 @@ public class TicketPanel extends MyPanel implements ActionListener {
                 if(printer.printDialog()) {
                     try {
                         printer.print();
-                        buyBtn.setVisible(true); backBtn.setVisible(true);
+                        buyBtn.setVisible(true); backBtn.setVisible(true); fileBtn.setVisible(true);
                     } catch (PrinterException e1) {
                         buyBtn.setVisible(true); backBtn.setVisible(true);
                         JOptionPane.showMessageDialog(null, "Eroare");
                     }
                 }
                 else {
-                    buyBtn.setVisible(true); backBtn.setVisible(true);
+                    buyBtn.setVisible(true); backBtn.setVisible(true); fileBtn.setVisible(true);
                 }
             }
             else if(e.getSource() == fileBtn) {
