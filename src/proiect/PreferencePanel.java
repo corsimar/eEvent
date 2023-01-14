@@ -1,21 +1,14 @@
 package proiect;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Font;
-import java.awt.FontMetrics;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.ArrayList;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 public class PreferencePanel extends MyPanel implements ActionListener {
-    private JLabel title;
-    private ArrayList<JButton> preferences = new ArrayList<JButton>();
-    private ArrayList<JButton> selected = new ArrayList<JButton>();
+    private MyLabel title;
+    private ArrayList<MyButton> preferences = new ArrayList<MyButton>();
+    private ArrayList<MyButton> selected = new ArrayList<MyButton>();
     private ArrayList<Integer> options = new ArrayList<Integer>();
     private int textW;
 
@@ -24,23 +17,13 @@ public class PreferencePanel extends MyPanel implements ActionListener {
         setBackground(Color.WHITE);
         setVisible(false);
 
-        title = new JLabel("Alege categoriile tale preferate");
-        title.setFont(new Font("Monospaced", Font.BOLD, fontTitleSize));
-        title.setForeground(textColor);
-        title.setHorizontalAlignment(SwingConstants.CENTER);
-        title.setVerticalAlignment(SwingConstants.BOTTOM);
+        title = new MyLabel("Alege categorille tale preferate", textColor, new Font("Monospaced", Font.BOLD, fontTitleSize), SwingConstants.CENTER, SwingConstants.BOTTOM);
         add(title);
 
         for(int i = 0; i < Utils.categories.size(); i++) {
-            JButton btn = new JButton(Utils.categories.get(i));
+            MyButton btn = new MyButton(Utils.categories.get(i), new Font("Monospaced", Font.BOLD, fontMenuSize), null, textColor, null, Cursor.HAND_CURSOR);
             btn.setName(i + "");
-            btn.setFont(new Font("Monospaced", Font.BOLD, fontMenuSize));
-            btn.setForeground(textColor);
             btn.setHorizontalAlignment(SwingConstants.LEFT);
-            btn.setContentAreaFilled(false);
-            btn.setBorder(null);
-            btn.setFocusPainted(false);
-            btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             btn.addActionListener(this);
             add(btn);
             preferences.add(btn);

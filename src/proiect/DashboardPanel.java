@@ -1,18 +1,12 @@
 package proiect;
 
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-
-import java.awt.Font;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.awt.Color;
+import javax.swing.*;
+import java.awt.*;
+import java.io.*;
 
 public class DashboardPanel extends MyPanel {
-    private JLabel[] boxLabel = new JLabel[3], boxTitle = new JLabel[3], boxInfo = new JLabel[3];
+    private JLabel[] boxLabel = new JLabel[3];
+    private MyLabel[] boxTitle = new MyLabel[3], boxInfo = new MyLabel[3];
 
     public DashboardPanel() {
         setLayout(null);
@@ -25,18 +19,8 @@ public class DashboardPanel extends MyPanel {
             boxLabel[i].setBackground(Color.WHITE);
             boxLabel[i].setBorder(BorderFactory.createLineBorder(menuColor, 1, true));
 
-            boxTitle[i] = new JLabel();
-            boxTitle[i].setFont(new Font("Monospaced", Font.BOLD, fontTitleSize));
-            boxTitle[i].setForeground(textColor);
-            boxTitle[i].setHorizontalAlignment(SwingConstants.CENTER);
-            boxTitle[i].setVerticalAlignment(SwingConstants.CENTER);
-            add(boxTitle[i]);
-
-            boxInfo[i] = new JLabel();
-            boxInfo[i].setFont(new Font("Monospaced", Font.PLAIN, fontInputSize));
-            boxInfo[i].setForeground(textColor);
-            boxInfo[i].setHorizontalAlignment(SwingConstants.CENTER);
-            boxInfo[i].setVerticalAlignment(SwingConstants.CENTER);
+            boxTitle[i] = new MyLabel("", textColor, new Font("Monospace", Font.BOLD, fontTitleSize), SwingConstants.CENTER, SwingConstants.CENTER);
+            boxInfo[i] = new MyLabel("", textColor, new Font("Monospace", Font.PLAIN, fontInputSize), SwingConstants.CENTER, SwingConstants.CENTER);
             
             add(boxTitle[i]);
             add(boxInfo[i]);

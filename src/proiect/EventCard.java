@@ -1,20 +1,12 @@
 package proiect;
 
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
-
-import java.awt.Color;
-import java.awt.Font;
+import javax.swing.*;
+import java.awt.*;
 
 public class EventCard extends MyPanel {
     private Event event;
-    private JLabel title;
-    private JLabel date;
-    private JLabel category;
+    private MyLabel title, date, category, ticketPrice;
     private JTextArea description;
-    private JLabel ticketPrice;
 
     public EventCard(Event event) {
         this.event = event;
@@ -25,37 +17,18 @@ public class EventCard extends MyPanel {
         Color color = event.getTitleColor();
         String hex = String.format("#%02X%02X%02X", color.getRed(), color.getGreen(), color.getBlue());
         StringBuffer sb = new StringBuffer("<html><font color='");
-        sb.append(hex);
-        sb.append("'>");
-        sb.append(event.getTitle());
-        sb.append("</font> - ");
-        sb.append(event.getLocation());
-        sb.append("</html>");
+        sb.append(hex); sb.append("'>"); sb.append(event.getTitle()); sb.append("</font> - "); sb.append(event.getLocation()); sb.append("</html>");
 
-        title = new JLabel(sb.toString());
-        title.setFont(new Font("Monospaced", Font.BOLD, fontTitleSize));
-        title.setForeground(textColor);
-        title.setHorizontalAlignment(SwingConstants.LEFT);
-        title.setVerticalAlignment(SwingConstants.BOTTOM);
+        title = new MyLabel(sb.toString(), textColor, new Font("Monospaced", Font.BOLD, fontTitleSize), SwingConstants.LEFT, SwingConstants.BOTTOM);
         add(title);
 
         sb = new StringBuffer(event.getDate());
-        sb.append(", ");
-        sb.append("ora ");
-        sb.append(event.getHour());
+        sb.append(", "); sb.append("ora "); sb.append(event.getHour());
 
-        date = new JLabel(sb.toString());
-        date.setFont(new Font("Monospaced", Font.PLAIN, fontMenuSize));
-        date.setForeground(textColor);
-        date.setHorizontalAlignment(SwingConstants.LEFT);
-        date.setVerticalAlignment(SwingConstants.TOP);
+        date = new MyLabel(sb.toString(), textColor, new Font("Monospaced", Font.PLAIN, fontMenuSize), SwingConstants.LEFT, SwingConstants.TOP);
         add(date);
 
-        category = new JLabel(event.getCategory());
-        category.setFont(new Font("Monospaced", Font.BOLD, fontMenuSize));
-        category.setForeground(textColor);
-        category.setHorizontalAlignment(SwingConstants.LEFT);
-        category.setVerticalAlignment(SwingConstants.TOP);
+        category = new MyLabel(event.getCategory(), textColor, new Font("Monospaced", Font.BOLD, fontMenuSize), SwingConstants.LEFT, SwingConstants.TOP);
         add(category);
 
         description = new JTextArea(event.getDescription());
@@ -66,43 +39,14 @@ public class EventCard extends MyPanel {
         add(description);
 
         sb = new StringBuffer("<html><p><b>Pret bilet:</b> ");
-        sb.append(event.getTicketPrice());
-        sb.append(" RON</p></html>");
+        sb.append(event.getTicketPrice()); sb.append(" RON</p></html>");
 
-        ticketPrice = new JLabel(sb.toString());
-        ticketPrice.setFont(new Font("Monospaced", Font.PLAIN, fontMenuSize));
-        ticketPrice.setForeground(textColor);
-        ticketPrice.setHorizontalAlignment(SwingConstants.LEFT);
-        ticketPrice.setVerticalAlignment(SwingConstants.TOP);
+        ticketPrice = new MyLabel(sb.toString(), textColor, new Font("Monospaced", Font.PLAIN, fontMenuSize), SwingConstants.LEFT, SwingConstants.TOP);
         add(ticketPrice);
     }
 
     public Event getEvent() {
         return this.event;
-    }
-
-    public String getTitle() {
-        return this.event.getTitle();
-    }
-
-    public Color getTitleColor() {
-        return this.event.getTitleColor();
-    }
-
-    public String getEventLocation() {
-        return this.event.getLocation();
-    }
-
-    public String getDate() {
-        return this.date.getText();
-    }
-
-    public String getCategory() {
-        return this.event.getCategory();
-    }
-
-    public int getPrice() {
-        return this.event.getTicketPrice();
     }
 
     @Override

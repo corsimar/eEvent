@@ -1,36 +1,22 @@
 package proiect;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPasswordField;
-import javax.swing.SwingConstants;
-
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Cursor;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 
 public class PasswordPanel extends MyPanel implements ActionListener {
     private User user;
-    private JLabel emailL;
+    private MyLabel emailL;
     private JPasswordField currPass, newPass, confirmPass;
     private char passChar;
-    private JButton confirmBtn;
+    private MyButton confirmBtn;
 
     public PasswordPanel() {
         setLayout(null);
         setBackground(Color.WHITE);
         setVisible(false);
 
-        emailL = new JLabel();
-        emailL.setFont(new Font("Monospaced", Font.BOLD, fontTitleSize));
-        emailL.setForeground(textColor);
-        emailL.setHorizontalAlignment(SwingConstants.CENTER);
-        emailL.setVerticalAlignment(SwingConstants.CENTER);
+        emailL = new MyLabel("", textColor, new Font("Monospaced", Font.BOLD, fontTitleSize), SwingConstants.CENTER, SwingConstants.CENTER);
         add(emailL);
 
         currPass = new JPasswordField();
@@ -89,13 +75,7 @@ public class PasswordPanel extends MyPanel implements ActionListener {
         });
         add(confirmPass);
 
-        confirmBtn = new JButton("Confirma");
-        confirmBtn.setFont(new Font("Monospaced", Font.BOLD, fontMenuSize));
-        confirmBtn.setBackground(btnColor);
-        confirmBtn.setForeground(Color.white);
-        confirmBtn.setBorder(null);
-        confirmBtn.setFocusPainted(false);
-        confirmBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        confirmBtn = new MyButton("Confirma", new Font("Monospaced", Font.BOLD, fontMenuSize), btnColor, Color.WHITE, null, Cursor.HAND_CURSOR);
         confirmBtn.addActionListener(this);
         add(confirmBtn);
     }

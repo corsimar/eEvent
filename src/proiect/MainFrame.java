@@ -1,37 +1,13 @@
 package proiect;
 
-import java.awt.Dimension;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Cursor;
-import java.util.ArrayList;
+import javax.swing.*;
+import javax.swing.text.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
 import java.util.Timer;
-import java.util.TimerTask;
-import java.awt.MouseInfo;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.PlainDocument;
 
-public class MainFrame extends MyFrame implements ActionListener {
+public class MainFrame extends MyFrame implements ActionListener, KeyListener {
     private int mouseX = -1, mouseY = -1, windowW, windowH;
 
     private JPanel topBar;
@@ -82,6 +58,7 @@ public class MainFrame extends MyFrame implements ActionListener {
                 }
 			}
         });
+        addKeyListener(this);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setUndecorated(true);
         setVisible(true);
@@ -207,6 +184,7 @@ public class MainFrame extends MyFrame implements ActionListener {
 
         confirmBtn = new MyButton("Confirma", new Font("Monospaced", Font.BOLD, fontMenuSize), btnColor, Color.WHITE, null, Cursor.HAND_CURSOR);
         confirmBtn.addActionListener(this);
+        getRootPane().setDefaultButton(confirmBtn);
         loginPanel.add(confirmBtn);
 
         verticalLine = new JLabel();
@@ -267,7 +245,7 @@ public class MainFrame extends MyFrame implements ActionListener {
         selectedCircle = new JLabel("");
         selectedCircle.setIcon(new ImageIcon(selectedImg));
 
-        eventsBtn = new MyButton("Exploreaza", new Font("Monospaced", Font.BOLD, fontTitleSize), null, textColor, null, Cursor.HAND_CURSOR);
+        eventsBtn = new MyButton("Exploreaza", new Font("Monospaced", Font.BOLD, fontTitleSize), Color.WHITE, textColor, null, Cursor.HAND_CURSOR);
         eventsBtn.setHorizontalAlignment(SwingConstants.LEFT);
         eventsBtn.addActionListener(this);
         menuBar.add(eventsBtn);
@@ -418,8 +396,8 @@ public class MainFrame extends MyFrame implements ActionListener {
             disconnectBtn.setBounds(leftMargin, prefBtn.getBounds().y + prefBtn.getBounds().height + menuOffset, fm.stringWidth(disconnectBtn.getText()), fm.getHeight());
 
             if(selectedMenu != null) {
-                selectedCircle.setBounds(selectedMenu.getBounds().x, selectedMenu.getBounds().y, selectedImg.getWidth(selectedCircle), selectedImg.getHeight(selectedCircle));
-                selectedCircle.setBounds(selectedCircle.getBounds().x - leftMargin / 2 - selectedImg.getWidth(selectedCircle) / 2, selectedCircle.getBounds().y + (eventsBtn.getBounds().height - selectedCircle.getBounds().height) / 2, selectedImg.getWidth(selectedCircle), selectedImg.getHeight(selectedCircle));
+                selectedCircle.setBounds(selectedMenu.getBounds().x, selectedMenu.getBounds().y + selectedMenu.getFontMetrics(selectedMenu.getFont()).getAscent() / 2, selectedImg.getWidth(selectedCircle), selectedImg.getHeight(selectedCircle));
+                selectedCircle.setBounds(selectedCircle.getBounds().x - leftMargin / 2 - selectedImg.getWidth(selectedCircle) / 2, selectedCircle.getBounds().y, selectedImg.getWidth(selectedCircle), selectedImg.getHeight(selectedCircle));
             }
         }
         if(eventsPanel.isVisible()) {
@@ -730,54 +708,44 @@ public class MainFrame extends MyFrame implements ActionListener {
                 }
                 else {
                     if(loginText.getText().equals("Inregistrare")) {
-                        user = new User(emailInp.getText(), new String(passInp.getPassword()), new ArrayList<Integer>(), "", new ArrayList<Event>());
-                        if(user.isEmailValid()) {
-                            if(passInp.getEchoChar() != ((char)0)) {
-                                if(user.isPasswordValid()) {
-                                    if(!User.userExists(user)) {
-                                        resetInputFields();
-                                        showPreferences();
+                        if(!emailInp.getText().equals("Adresa de email") && passInp.getEchoChar() != (char)0 && !emailInp.getText().equals("") && !passInp.getPassword().equals("")) {
+                            user = new User(emailInp.getText(), new String(passInp.getPassword()), new ArrayList<Integer>(), "", new ArrayList<Event>());
+                            if(user.isEmailValid()) {
+                                if(passInp.getEchoChar() != ((char)0)) {
+                                    if(user.isPasswordValid()) {
+                                        if(!User.userExists(user)) {
+                                            resetInputFields();
+                                            showPreferences();
+                                        }
+                                        else JOptionPane.showMessageDialog(null, "Exista deja un cont cu acest nume de utilizator!");
                                     }
-                                    else {
-                                        JOptionPane.showMessageDialog(null, "Exista deja un cont cu acest nume de utilizator!");
-                                    }
+                                    else JOptionPane.showMessageDialog(null, "Parola trebuie sa contina cel putin 3 caractere!");
                                 }
-                                else {
-                                    JOptionPane.showMessageDialog(null, "Parola trebuie sa contina cel putin 3 caractere!");
-                                }
+                                else JOptionPane.showMessageDialog(null, "Introduceti parola!");
                             }
-                            else {
-                                JOptionPane.showMessageDialog(null, "Introduceti parola!");
-                            }
+                            else JOptionPane.showMessageDialog(null, "Introduceti o adresa de email valida!");
                         }
-                        else {
-                            JOptionPane.showMessageDialog(null, "Introduceti o adresa de email valida!");
-                        }
+                        else JOptionPane.showMessageDialog(null, "Completati ambele campuri!");
                     }
                     else {
-                        user = new User(emailInp.getText(), new String(passInp.getPassword()));
-                        if(user.isEmailValid()) {
-                            if(passInp.getEchoChar() != ((char)0)) {
-                                if(user.isPasswordValid()) {
-                                    if(user.login()) {
-                                        loginUser();
-                                        resetInputFields();
+                        if(!emailInp.getText().equals("Adresa de email") && passInp.getEchoChar() != (char)0 && !emailInp.getText().equals("") && !passInp.getPassword().equals("")) {
+                            user = new User(emailInp.getText(), new String(passInp.getPassword()));
+                            if(user.isEmailValid()) {
+                                if(passInp.getEchoChar() != ((char)0)) {
+                                    if(user.isPasswordValid()) {
+                                        if(user.login()) {
+                                            loginUser();
+                                            resetInputFields();
+                                        }
+                                        else JOptionPane.showMessageDialog(null, "Adresa de email sau parola introdusa nu este corecta!");
                                     }
-                                    else {
-                                        JOptionPane.showMessageDialog(null, "Adresa de email sau parola introdusa nu este corecta!");
-                                    }
+                                    else JOptionPane.showMessageDialog(null, "Parola trebuie sa contina cel putin 3 caractere!");
                                 }
-                                else {
-                                    JOptionPane.showMessageDialog(null, "Parola trebuie sa contina cel putin 3 caractere!");
-                                }
+                                else JOptionPane.showMessageDialog(null, "Introduceti parola!");
                             }
-                            else {
-                                JOptionPane.showMessageDialog(null, "Introduceti parola!");
-                            }
+                            else JOptionPane.showMessageDialog(null, "Introduceti o adresa de email valida!");
                         }
-                        else {
-                            JOptionPane.showMessageDialog(null, "Introduceti o adresa de email valida!");
-                        }
+                        else JOptionPane.showMessageDialog(null, "Completati ambele campuri!");
                     }
                 }
             }
@@ -848,6 +816,20 @@ public class MainFrame extends MyFrame implements ActionListener {
             handleAdminMenu(e);
         }
     }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if(loginPanel.isVisible()) {
+            if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+                
+            }
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {}
+    @Override
+    public void keyTyped(KeyEvent e) {}
 }
 
 class JTextFieldLimit extends PlainDocument {

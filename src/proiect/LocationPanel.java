@@ -1,14 +1,10 @@
 package proiect;
 
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-
-import java.awt.Color;
-import java.awt.Font;
+import javax.swing.*;
+import java.awt.*;
 
 public class LocationPanel extends MyPanel {
-    private JLabel title;
+    private MyLabel title;
     private JComboBox<String> locations;
 
     public LocationPanel() {
@@ -16,11 +12,7 @@ public class LocationPanel extends MyPanel {
         setBackground(Color.WHITE);
         setVisible(false);
 
-        title = new JLabel("Spune-ne unde locuiesti pentru o experienta a aplicatiei mai buna");
-        title.setFont(new Font("Monospaced", Font.BOLD, fontTitleSize));
-        title.setForeground(textColor);
-        title.setHorizontalAlignment(SwingConstants.CENTER);
-        title.setVerticalAlignment(SwingConstants.CENTER);
+        title = new MyLabel("Spune-ne unde locuiesti pentru o experienta a aplicatiei mai buna", textColor, new Font("Monospaced", Font.BOLD, fontTitleSize), SwingConstants.CENTER, SwingConstants.CENTER);
         add(title);
 
         String[] options = Utils.locations.toArray(new String[Utils.locations.size()]);

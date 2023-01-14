@@ -2,26 +2,16 @@ package proiect;
 
 import java.util.ArrayList;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
-
-import java.awt.Font;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 
 public class AEventsPanel extends MyPanel implements ActionListener {
-    private JLabel noElementsFoundL;
+    private MyLabel noElementsFoundL;
     private ArrayList<EventCard> eventCard;
     private ArrayList<JButton> eventOption;
     private int cardW, cardH = 300, panelH;
-    private JButton scrollUpBtn, scrollDownBtn;
+    private MyButton scrollUpBtn, scrollDownBtn;
     private int scrollLevel = 0, scrollStep;
     private boolean created = false, deleted = false;
 
@@ -32,29 +22,17 @@ public class AEventsPanel extends MyPanel implements ActionListener {
 
         loadImages();
         
-        noElementsFoundL = new JLabel("Nu au fost adaugate evenimente!");
-        noElementsFoundL.setFont(new Font("Monospace", Font.BOLD, fontTitleSize));
-        noElementsFoundL.setForeground(textColor);
-        noElementsFoundL.setHorizontalAlignment(SwingConstants.CENTER);
-        noElementsFoundL.setVerticalAlignment(SwingConstants.CENTER);
+        noElementsFoundL = new MyLabel("Nu au fost adaugate evenimente", textColor, new Font("Monospace", Font.BOLD, fontTitleSize), SwingConstants.CENTER, SwingConstants.CENTER);
         noElementsFoundL.setVisible(false);
         add(noElementsFoundL);
 
-        scrollUpBtn = new JButton();
+        scrollUpBtn = new MyButton("", null, btnColor, null, null, Cursor.HAND_CURSOR);
         scrollUpBtn.setIcon(new ImageIcon(upArrowImg));
-        scrollUpBtn.setBackground(btnColor);
-        scrollUpBtn.setBorder(null);
-        scrollUpBtn.setFocusPainted(false);
-        scrollUpBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         scrollUpBtn.addActionListener(this);
         add(scrollUpBtn);
 
-        scrollDownBtn = new JButton();
+        scrollDownBtn = new MyButton("", null, btnColor, null, null, Cursor.HAND_CURSOR);
         scrollDownBtn.setIcon(new ImageIcon(downArrowImg));
-        scrollDownBtn.setBackground(btnColor);
-        scrollDownBtn.setBorder(null);
-        scrollDownBtn.setFocusPainted(false);
-        scrollDownBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         scrollDownBtn.addActionListener(this);
         add(scrollDownBtn);
     }

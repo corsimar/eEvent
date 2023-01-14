@@ -1,14 +1,5 @@
 package proiect;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 
 @SuppressWarnings("unchecked")
@@ -221,7 +212,7 @@ public class User implements Serializable {
     }
 
     public boolean isEmailValid() {
-        return (this.email.contains("@") && this.email.contains(".") && this.email.length() > 5);
+        return (this.email.contains("@") && this.email.indexOf("@") == this.email.lastIndexOf("@") && this.email.contains(".") && this.email.length() > 5);
     }
 
     public boolean isPasswordValid() {

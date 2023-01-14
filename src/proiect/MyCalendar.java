@@ -1,24 +1,12 @@
 package proiect;
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Font;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import javax.imageio.ImageIO;
 
 public class MyCalendar extends JFrame implements ActionListener {
 
@@ -31,12 +19,12 @@ public class MyCalendar extends JFrame implements ActionListener {
     private int squareW = frameW / 7;
     private int btnW = 140, btnH = 40;
 
-    private JLabel title;
+    private MyLabel title;
     private BufferedImage leftArrowBuff, rightArrowBuff;
     private Image leftArrowImg, rightArrowImg;
-    private JButton leftArrowBtn, rightArrowBtn, confirmBtn;
+    private MyButton leftArrowBtn, rightArrowBtn, confirmBtn;
     private JPanel calendarPanel;
-    private JLabel lastDay;
+    private MyLabel lastDay;
     private int selectedDay = 0;
 
     public MyCalendar(String currDate) {
@@ -93,43 +81,26 @@ public class MyCalendar extends JFrame implements ActionListener {
     }
 
     private void setupCalendar() {
-        title = new JLabel();
+        title = new MyLabel("", textColor, new Font("Monospaced", Font.BOLD, 14), SwingConstants.CENTER, SwingConstants.CENTER);
         updateTitle();
-        title.setFont(new Font("Monospaced", Font.BOLD, 14));
-        title.setHorizontalAlignment(SwingConstants.CENTER);
-        title.setVerticalAlignment(SwingConstants.CENTER);
         title.setBounds(0, 0, frameW, 50);
         add(title);
 
-        leftArrowBtn = new JButton();
+        leftArrowBtn = new MyButton("", null, null, null, null, Cursor.HAND_CURSOR);
         leftArrowBtn.setIcon(new ImageIcon(leftArrowImg));
-        leftArrowBtn.setContentAreaFilled(false);
-        leftArrowBtn.setBorder(null);
-        leftArrowBtn.setFocusPainted(false);
         leftArrowBtn.addActionListener(this);
-        leftArrowBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         leftArrowBtn.setBounds(squareW - leftArrowImg.getWidth(leftArrowBtn), (title.getBounds().height - leftArrowImg.getHeight(leftArrowBtn)) / 2, leftArrowImg.getWidth(leftArrowBtn), leftArrowImg.getHeight(leftArrowBtn));
         add(leftArrowBtn);
 
-        rightArrowBtn = new JButton();
+        rightArrowBtn = new MyButton("", null, null, null, null, Cursor.HAND_CURSOR);
         rightArrowBtn.setIcon(new ImageIcon(rightArrowImg));
-        rightArrowBtn.setContentAreaFilled(false);
-        rightArrowBtn.setBorder(null);
-        rightArrowBtn.setFocusPainted(false);
         rightArrowBtn.addActionListener(this);
-        rightArrowBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         rightArrowBtn.setBounds(frameW - squareW, (title.getBounds().height - leftArrowImg.getHeight(leftArrowBtn)) / 2, leftArrowImg.getWidth(leftArrowBtn), leftArrowImg.getHeight(leftArrowBtn));
         add(rightArrowBtn);
 
         initDays();
 
-        confirmBtn = new JButton("Confirma");
-        confirmBtn.setFont(new Font("Monospaced", Font.BOLD, 17));
-        confirmBtn.setBackground(btnColor);
-        confirmBtn.setForeground(Color.white);
-        confirmBtn.setBorder(null);
-        confirmBtn.setFocusPainted(false);
-        confirmBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        confirmBtn = new MyButton("Confirma", new Font("Monospaced", Font.BOLD, 17), btnColor, Color.WHITE, null, Cursor.HAND_CURSOR);
         confirmBtn.addActionListener(this);
         confirmBtn.setBounds((frameW - btnW) / 2, title.getBounds().height + calendarPanel.getBounds().height + (frameH - (title.getBounds().height + calendarPanel.getBounds().height) - btnH) / 2, btnW, btnH);
         add(confirmBtn);
@@ -181,7 +152,7 @@ public class MyCalendar extends JFrame implements ActionListener {
                 if(lastDay != null) lastDay.setBackground(Color.white);
 
                 label.setBackground(menuColor);
-                lastDay = label;
+                lastDay = (MyLabel)label;
                 
                 selectedDay = index + 1;
             }

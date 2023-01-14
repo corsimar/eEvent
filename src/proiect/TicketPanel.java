@@ -9,11 +9,10 @@ import java.awt.print.*;
 public class TicketPanel extends MyPanel implements ActionListener {
     private JLabel box;
     private int boxW = 400, boxH = 300;
-    private JLabel title, location, date, category, price;
+    private MyLabel title, location, date, category, price;
     private User user;
     private Event event;
-    private JButton buyBtn, backBtn;
-    private MyButton fileBtn;
+    private MyButton buyBtn, backBtn, fileBtn;
     private boolean owned;
     private TicketPanel panel;
     private ControllerTicketPanel controller;
@@ -32,48 +31,22 @@ public class TicketPanel extends MyPanel implements ActionListener {
         box.setBackground(Color.WHITE);
         box.setBorder(BorderFactory.createLineBorder(menuColor, 2));
 
-        title = new JLabel();
-        title.setFont(new Font("Monospaced", Font.BOLD, fontTitleSize));
-        title.setForeground(textColor);
-        title.setHorizontalAlignment(SwingConstants.CENTER);
-        title.setVerticalAlignment(SwingConstants.CENTER);
+        title = new MyLabel("", textColor, new Font("Monospaced", Font.BOLD, fontTitleSize), SwingConstants.CENTER, SwingConstants.CENTER);
         add(title);
 
-        location = new JLabel();
-        location.setFont(new Font("Monospaced", Font.PLAIN, fontMenuSize));
-        location.setForeground(textColor);
-        location.setHorizontalAlignment(SwingConstants.LEFT);
-        location.setVerticalAlignment(SwingConstants.CENTER);
+        location = new MyLabel("", textColor, new Font("Monospaced", Font.PLAIN, fontMenuSize), SwingConstants.LEFT, SwingConstants.CENTER);
         add(location);
 
-        date = new JLabel();
-        date.setFont(new Font("Monospaced", Font.PLAIN, fontMenuSize));
-        date.setForeground(textColor);
-        date.setHorizontalAlignment(SwingConstants.LEFT);
-        date.setVerticalAlignment(SwingConstants.CENTER);
+        date = new MyLabel("", textColor, new Font("Monospaced", Font.PLAIN, fontMenuSize), SwingConstants.LEFT, SwingConstants.CENTER);
         add(date);
 
-        category = new JLabel();
-        category.setFont(new Font("Monospaced", Font.PLAIN, fontMenuSize));
-        category.setForeground(textColor);
-        category.setHorizontalAlignment(SwingConstants.LEFT);
-        category.setVerticalAlignment(SwingConstants.CENTER);
+        category = new MyLabel("", textColor, new Font("Monospaced", Font.PLAIN, fontMenuSize), SwingConstants.LEFT, SwingConstants.CENTER);
         add(category);
 
-        price = new JLabel();
-        price.setFont(new Font("Monospaced", Font.PLAIN, fontMenuSize));
-        price.setForeground(textColor);
-        price.setHorizontalAlignment(SwingConstants.LEFT);
-        price.setVerticalAlignment(SwingConstants.CENTER);
+        price = new MyLabel("", textColor, new Font("Monospaced", Font.PLAIN, fontMenuSize), SwingConstants.LEFT, SwingConstants.CENTER);
         add(price);
 
-        buyBtn = new JButton();
-        buyBtn.setFont(new Font("Monospaced", Font.BOLD, fontMenuSize));
-        buyBtn.setForeground(Color.WHITE);
-        buyBtn.setBackground(btnColor);
-        buyBtn.setBorder(null);
-        buyBtn.setFocusPainted(false);
-        buyBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        buyBtn = new MyButton("", new Font("Monospaced", Font.BOLD, fontMenuSize), btnColor, Color.WHITE, null, Cursor.HAND_CURSOR);
         buyBtn.addActionListener(this);
         add(buyBtn);
 
@@ -82,13 +55,7 @@ public class TicketPanel extends MyPanel implements ActionListener {
         fileBtn.setVisible(false);
         add(fileBtn);
 
-        backBtn = new JButton();
-        backBtn.setFont(new Font("Monospaced", Font.BOLD, fontMenuSize));
-        backBtn.setForeground(Color.WHITE);
-        backBtn.setBackground(btnColor);
-        backBtn.setBorder(null);
-        backBtn.setFocusPainted(false);
-        backBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        backBtn = new MyButton("", new Font("Monospaced", Font.BOLD, fontMenuSize), btnColor, Color.WHITE, null, Cursor.HAND_CURSOR);
         backBtn.addActionListener(this);
         add(backBtn);
 

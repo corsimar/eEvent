@@ -39,26 +39,4 @@ public abstract class MyPanel extends JPanel {
             ex.printStackTrace();
         }
     }
-
-    public String getDateMonth(String date) {
-        try {
-            int m = Integer.parseInt(date.substring(3, 5));
-            if(m == 1) return "Ianuarie";
-            else if(m == 2) return "Februarie";
-            else if(m == 3) return "Martie";
-            else if(m == 4) return "Aprilie";
-            else if(m == 5) return "Mai";
-            else if(m == 6) return "Iunie";
-            else if(m == 7) return "Iulie";
-            else if(m == 8) return "August";
-            else if(m == 9) return "Septembrie";
-            else if(m == 10) return "Octombrie";
-            else if(m == 11) return "Noiembrie";
-            else if(m == 12) return "Decembrie";
-            else return "null";
-        } catch(NumberFormatException nfe) {
-            nfe.printStackTrace();
-            return "null";
-        }
-    }
 }

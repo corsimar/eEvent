@@ -1,16 +1,8 @@
 package proiect;
 
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Font;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.JPasswordField;
-import javax.swing.SwingConstants;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 
 public class APasswordPanel extends MyPanel implements ActionListener {
 
@@ -18,7 +10,7 @@ public class APasswordPanel extends MyPanel implements ActionListener {
     private JPasswordField newPass;
     private JPasswordField confirmPass;
     private char passChar;
-    private JButton confirmBtn;
+    private MyButton confirmBtn;
 
     public APasswordPanel() {
         setLayout(null);
@@ -83,13 +75,7 @@ public class APasswordPanel extends MyPanel implements ActionListener {
         });
         add(confirmPass);
 
-        confirmBtn = new JButton("Confirma");
-        confirmBtn.setFont(new Font("Monospace", Font.BOLD, fontMenuSize));
-        confirmBtn.setForeground(Color.WHITE);
-        confirmBtn.setBackground(btnColor);
-        confirmBtn.setBorder(null);
-        confirmBtn.setFocusPainted(false);
-        confirmBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        confirmBtn = new MyButton("Confirma", new Font("Monospace", Font.BOLD, fontMenuSize), btnColor, Color.WHITE, null, Cursor.HAND_CURSOR);
         confirmBtn.addActionListener(this);
         add(confirmBtn);
     }

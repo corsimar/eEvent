@@ -1,43 +1,28 @@
 package proiect;
 
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JColorChooser;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JSpinner;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingConstants;
-
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.awt.Color;
-import java.awt.Cursor;
+import javax.swing.*;
 import javax.swing.JSpinner.DefaultEditor;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.awt.event.*;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.Timer;
 
 public class AddEventPanel extends MyPanel implements ActionListener {
 
-    private JLabel panelTitle;
-    private JLabel addTitleL, titleMaxChar, addColorL, addLocationL, addDateL, dateSelectedL, addHourL, addHourInp, addMinuteInp, addCategoryL, addDescriptionL, descriptionMaxChar, addPriceL;
-    private JButton[] upArrow = new JButton[2], downArrow = new JButton[2];
+    private MyLabel panelTitle, addTitleL, titleMaxChar, addColorL, addLocationL, addDateL, dateSelectedL, addHourL, addHourInp, addMinuteInp, addCategoryL, addDescriptionL, descriptionMaxChar, addPriceL;
+    private MyButton[] upArrow = new MyButton[2], downArrow = new MyButton[2];
     private JTextField addTitleInp;
     private JTextArea addDescriptionInp;
-    private JButton addColorBtn, addDateBtn, confirmAddEventBtn;
+    private MyButton addColorBtn, addDateBtn, confirmAddEventBtn;
     private JComboBox<String> addLocationCB, addCategoryCB;
     private JSpinner addPriceInp;
-    private JButton[] spinnerOption = new JButton[2];
+    private MyButton[] spinnerOption = new MyButton[2];
     private String dateSelected;
-    private int minuteSelected, hourSelected;
+    private String currDate;
+    private int minuteSelected, hourSelected, currHour;
+    private Calendar calendar;
 
     public AddEventPanel() {
         setLayout(null);
@@ -46,17 +31,10 @@ public class AddEventPanel extends MyPanel implements ActionListener {
 
         loadImages();
 
-        panelTitle = new JLabel("Adauga eveniment nou");
-        panelTitle.setFont(new Font("Monospaced", Font.BOLD, fontTitleSize));
-        panelTitle.setForeground(textColor);
-        panelTitle.setHorizontalAlignment(SwingConstants.CENTER);
+        panelTitle = new MyLabel("Adauga eveniment nou", textColor, new Font("Monospaced", Font.BOLD, fontTitleSize), SwingConstants.CENTER, -1);
         add(panelTitle);
 
-        addTitleL = new JLabel("Titlu:");
-        addTitleL.setFont(new Font("Monospaced", Font.BOLD, fontMenuSize));
-        addTitleL.setForeground(textColor);
-        addTitleL.setHorizontalAlignment(SwingConstants.LEFT);
-        addTitleL.setVerticalAlignment(SwingConstants.CENTER);
+        addTitleL = new MyLabel("Titlu:", textColor, new Font("Monospaced", Font.BOLD, fontMenuSize), SwingConstants.LEFT, SwingConstants.CENTER);
         add(addTitleL);
 
         addTitleInp = new JTextField();
@@ -66,33 +44,17 @@ public class AddEventPanel extends MyPanel implements ActionListener {
         addTitleInp.setHorizontalAlignment(SwingConstants.CENTER);
         add(addTitleInp);
 
-        titleMaxChar = new JLabel("(maxim 20 de caractere)");
-        titleMaxChar.setFont(new Font("Monospaced", Font.PLAIN, fontMenuSize));
-        titleMaxChar.setForeground(textColor);
-        titleMaxChar.setHorizontalAlignment(SwingConstants.LEFT);
-        titleMaxChar.setVerticalAlignment(SwingConstants.CENTER);
+        titleMaxChar = new MyLabel("(maxim 20 de caractere)", textColor, new Font("Monospaced", Font.PLAIN, fontMenuSize), SwingConstants.LEFT, SwingConstants.CENTER);
         add(titleMaxChar);
 
-        addColorL = new JLabel("Culoare:");
-        addColorL.setFont(new Font("Monospaced", Font.BOLD, fontMenuSize));
-        addColorL.setForeground(textColor);
-        addColorL.setHorizontalAlignment(SwingConstants.LEFT);
-        addColorL.setVerticalAlignment(SwingConstants.CENTER);
+        addColorL = new MyLabel("Culoare:", textColor, new Font("Monospaced", Font.BOLD, fontMenuSize), SwingConstants.LEFT, SwingConstants.CENTER);
         add(addColorL);
 
-        addColorBtn = new JButton();
-        addColorBtn.setBackground(btnColor);
-        addColorBtn.setFocusPainted(false);
-        addColorBtn.setBorder(BorderFactory.createLineBorder(menuColor, 1));
-        addColorBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        addColorBtn = new MyButton("", null, btnColor, null, BorderFactory.createLineBorder(menuColor, 1), Cursor.HAND_CURSOR);
         addColorBtn.addActionListener(this);
         add(addColorBtn);
 
-        addLocationL = new JLabel("Locatie:");
-        addLocationL.setFont(new Font("Monospaced", Font.BOLD, fontMenuSize));
-        addLocationL.setForeground(textColor);
-        addLocationL.setHorizontalAlignment(SwingConstants.LEFT);
-        addLocationL.setVerticalAlignment(SwingConstants.CENTER);
+        addLocationL = new MyLabel("Locatie:", textColor, new Font("Monospaced", Font.BOLD, fontMenuSize), SwingConstants.LEFT, SwingConstants.CENTER);
         add(addLocationL);
 
         addLocationCB = new JComboBox<String>(Utils.locations.toArray(new String[Utils.locations.size()]));
@@ -102,74 +64,38 @@ public class AddEventPanel extends MyPanel implements ActionListener {
         ((JLabel)addLocationCB.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
         add(addLocationCB);
 
-        addDateL = new JLabel("Data:");
-        addDateL.setFont(new Font("Monospaced", Font.BOLD, fontMenuSize));
-        addDateL.setForeground(textColor);
-        addDateL.setHorizontalAlignment(SwingConstants.LEFT);
-        addDateL.setVerticalAlignment(SwingConstants.CENTER);
+        addDateL = new MyLabel("Data:", textColor, new Font("Monospaced", Font.BOLD, fontMenuSize), SwingConstants.LEFT, SwingConstants.CENTER);
         add(addDateL);
 
-        addDateBtn = new JButton("Calendar");
-        addDateBtn.setFont(new Font("Monospaced", Font.BOLD, fontMenuSize));
-        addDateBtn.setBackground(btnColor);
-        addDateBtn.setForeground(Color.white);
-        addDateBtn.setBorder(null);
-        addDateBtn.setFocusPainted(false);
-        addDateBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        addDateBtn = new MyButton("Calendar", new Font("Monospaced", Font.BOLD, fontMenuSize), btnColor, Color.WHITE, null, Cursor.HAND_CURSOR);
         addDateBtn.addActionListener(this);
         add(addDateBtn);
 
-        dateSelectedL = new JLabel();
-        dateSelectedL.setFont(new Font("Monospaced", Font.PLAIN, fontMenuSize));
-        dateSelectedL.setForeground(textColor);
-        dateSelectedL.setHorizontalAlignment(SwingConstants.LEFT);
-        dateSelectedL.setVerticalAlignment(SwingConstants.CENTER);
+        dateSelectedL = new MyLabel("(alegeti data)", textColor, new Font("Monospaced", Font.PLAIN, fontMenuSize), SwingConstants.LEFT, SwingConstants.CENTER);
         add(dateSelectedL);
 
-        addHourL = new JLabel("Ora:");
-        addHourL.setFont(new Font("Monospaced", Font.BOLD, fontMenuSize));
-        addHourL.setForeground(textColor);
-        addHourL.setHorizontalAlignment(SwingConstants.LEFT);
-        addHourL.setVerticalAlignment(SwingConstants.CENTER);
+        addHourL = new MyLabel("Data:", textColor, new Font("Monospaced", Font.BOLD, fontMenuSize), SwingConstants.LEFT, SwingConstants.CENTER);
         add(addHourL);
 
-        addMinuteInp = new JLabel("00");
-        addMinuteInp.setFont(new Font("Monospaced", Font.BOLD, fontMenuSize));
-        addMinuteInp.setForeground(textColor);
-        addMinuteInp.setHorizontalAlignment(SwingConstants.RIGHT);
-        addMinuteInp.setVerticalAlignment(SwingConstants.CENTER);
+        addMinuteInp = new MyLabel("00", textColor, new Font("Monospaced", Font.BOLD, fontMenuSize), SwingConstants.RIGHT, SwingConstants.CENTER);
         add(addMinuteInp);
 
-        addHourInp = new JLabel("12");
-        addHourInp.setFont(new Font("Monospaced", Font.BOLD, fontMenuSize));
-        addHourInp.setForeground(textColor);
-        addHourInp.setHorizontalAlignment(SwingConstants.RIGHT);
-        addHourInp.setVerticalAlignment(SwingConstants.CENTER);
+        addHourInp = new MyLabel("", textColor, new Font("Monospaced", Font.BOLD, fontMenuSize), SwingConstants.RIGHT, SwingConstants.CENTER);
         add(addHourInp);
 
         for(int i = 0; i < 2; i++) {
-            upArrow[i] = new JButton();
+            upArrow[i] = new MyButton("", null, null, null, null, -1);
             upArrow[i].setIcon(new ImageIcon(upArrowImg));
-            upArrow[i].setContentAreaFilled(false);
-            upArrow[i].setBorder(null);
-            upArrow[i].setFocusPainted(false);
             upArrow[i].addActionListener(this);
             add(upArrow[i]);
 
-            downArrow[i] = new JButton();
+            downArrow[i] = new MyButton("", null, null, null, null, -1);
             downArrow[i].setIcon(new ImageIcon(downArrowImg));
-            downArrow[i].setContentAreaFilled(false);
-            downArrow[i].setBorder(null);
-            downArrow[i].setFocusPainted(false);
             downArrow[i].addActionListener(this);
             add(downArrow[i]);
         }
 
-        addCategoryL = new JLabel("Categorie:");
-        addCategoryL.setFont(new Font("Monospaced", Font.BOLD, fontMenuSize));
-        addCategoryL.setForeground(textColor);
-        addCategoryL.setHorizontalAlignment(SwingConstants.LEFT);
-        addCategoryL.setVerticalAlignment(SwingConstants.CENTER);
+        addCategoryL = new MyLabel("Categorie:", textColor, new Font("Monospaced", Font.BOLD, fontMenuSize), SwingConstants.LEFT, SwingConstants.CENTER);
         add(addCategoryL);
 
         addCategoryCB = new JComboBox<String>(Utils.categories.toArray(new String[Utils.categories.size()]));
@@ -179,11 +105,7 @@ public class AddEventPanel extends MyPanel implements ActionListener {
         ((JLabel)addCategoryCB.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
         add(addCategoryCB);
 
-        addDescriptionL = new JLabel("Descriere:");
-        addDescriptionL.setFont(new Font("Monospaced", Font.BOLD, fontMenuSize));
-        addDescriptionL.setForeground(textColor);
-        addDescriptionL.setHorizontalAlignment(SwingConstants.LEFT);
-        addDescriptionL.setVerticalAlignment(SwingConstants.CENTER);
+        addDescriptionL = new MyLabel("Descriere:", textColor, new Font("Monospaced", Font.BOLD, fontMenuSize), SwingConstants.LEFT, SwingConstants.CENTER);
         add(addDescriptionL);
 
         addDescriptionInp = new JTextArea();
@@ -194,18 +116,10 @@ public class AddEventPanel extends MyPanel implements ActionListener {
         addDescriptionInp.setLineWrap(true);
         add(addDescriptionInp);
 
-        descriptionMaxChar = new JLabel("(maxim 300 de caractere)");
-        descriptionMaxChar.setFont(new Font("Monospaced", Font.PLAIN, fontMenuSize));
-        descriptionMaxChar.setForeground(textColor);
-        descriptionMaxChar.setHorizontalAlignment(SwingConstants.LEFT);
-        descriptionMaxChar.setVerticalAlignment(SwingConstants.CENTER);
+        descriptionMaxChar = new MyLabel("(maxim 300 de caractere)", textColor, new Font("Monospaced", Font.PLAIN, fontMenuSize), SwingConstants.LEFT, SwingConstants.CENTER);
         add(descriptionMaxChar);
 
-        addPriceL = new JLabel("Pret bilet:");
-        addPriceL.setFont(new Font("Monospaced", Font.BOLD, fontMenuSize));
-        addPriceL.setForeground(textColor);
-        addPriceL.setHorizontalAlignment(SwingConstants.LEFT);
-        addPriceL.setVerticalAlignment(SwingConstants.CENTER);
+        addPriceL = new MyLabel("Pret bilet:", textColor, new Font("Monospaced", Font.BOLD, fontMenuSize), SwingConstants.LEFT, SwingConstants.CENTER);
         add(addPriceL);
 
         SpinnerNumberModel snm = new SpinnerNumberModel(0, 0, 1000, 1);
@@ -218,23 +132,12 @@ public class AddEventPanel extends MyPanel implements ActionListener {
         add(addPriceInp);
 
         for(int i = 0; i < 2; i++) {
-            spinnerOption[i] = new JButton(getSpinnerOptionText(i));
-            spinnerOption[i].setBackground(btnColor);
-            spinnerOption[i].setForeground(Color.WHITE);
-            spinnerOption[i].setBorder(null);
-            spinnerOption[i].setFocusPainted(false);
-            spinnerOption[i].setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            spinnerOption[i] = new MyButton(getSpinnerOptionText(i), new Font("Monospaced", Font.BOLD, fontMenuSize), btnColor, Color.WHITE, null, Cursor.HAND_CURSOR);
             spinnerOption[i].addActionListener(this);
             add(spinnerOption[i]);
         }
 
-        confirmAddEventBtn = new JButton("Adauga");
-        confirmAddEventBtn.setFont(new Font("Monospaced", Font.BOLD, fontMenuSize));
-        confirmAddEventBtn.setBackground(btnColor);
-        confirmAddEventBtn.setForeground(Color.WHITE);
-        confirmAddEventBtn.setBorder(null);
-        confirmAddEventBtn.setFocusPainted(false);
-        confirmAddEventBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        confirmAddEventBtn = new MyButton("Adauga", new Font("Monospaced", Font.BOLD, fontMenuSize), btnColor, Color.WHITE, null, Cursor.HAND_CURSOR);
         confirmAddEventBtn.addActionListener(this);
         add(confirmAddEventBtn);
     }
@@ -245,42 +148,70 @@ public class AddEventPanel extends MyPanel implements ActionListener {
     }
 
     private void incMinute() {
-        minuteSelected++;
-        if(minuteSelected == 60) minuteSelected = 0;
-        if(minuteSelected < 10) addMinuteInp.setText("0" + minuteSelected);
-        else addMinuteInp.setText("" + minuteSelected);
+        if(dateSelected == null) {
+            JOptionPane.showMessageDialog(null, "Trebuie sa alegi data evenimentului inainte de a seta ora!");
+        }
+        else {
+            minuteSelected++;
+            if(minuteSelected == 60) minuteSelected = 0;
+            if(minuteSelected < 10) addMinuteInp.setText("0" + minuteSelected);
+            else addMinuteInp.setText("" + minuteSelected);
+        }
     }
 
     private void decMinute() {
-        minuteSelected--;
-        if(minuteSelected < 0) minuteSelected = 59;
-        if(minuteSelected < 10) addMinuteInp.setText("0" + minuteSelected);
-        else addMinuteInp.setText("" + minuteSelected);
+        if(dateSelected == null) {
+            JOptionPane.showMessageDialog(null, "Trebuie sa alegi data evenimentului inainte de a seta ora!");
+        }
+        else {
+            minuteSelected--;
+            if(minuteSelected < 0) minuteSelected = 59;
+            if(minuteSelected < 10) addMinuteInp.setText("0" + minuteSelected);
+            else addMinuteInp.setText("" + minuteSelected);
+        }
     }
     
     private void incHour() {
-        hourSelected++;
-        if(hourSelected == 24) hourSelected = 0;
-        if(hourSelected < 10) addHourInp.setText("0" + hourSelected);
-        else addHourInp.setText("" + hourSelected);
+        if(dateSelected == null) {
+            JOptionPane.showMessageDialog(null, "Trebuie sa alegi data evenimentului inainte de a seta ora!");
+        }
+        else if(currDate.equals(dateSelected) && (hourSelected + 1) == 24) {
+            JOptionPane.showMessageDialog(null, "Nu poti alege ora curenta sau o ora anterioara orei curente pentru un eveniment din ziua curenta!");
+        }
+        else {
+            hourSelected++;
+            if(hourSelected == 24) hourSelected = 0;
+            if(hourSelected < 10) addHourInp.setText("0" + hourSelected);
+            else addHourInp.setText("" + hourSelected);
+        }
     }
 
     private void decHour() {
-        hourSelected--;
-        if(hourSelected < 0) hourSelected = 23;
-        if(hourSelected < 10) addHourInp.setText("0" + hourSelected);
-        else addHourInp.setText("" + hourSelected);
+        if(dateSelected == null) {
+            JOptionPane.showMessageDialog(null, "Trebuie sa alegi data evenimentului inainte de a seta ora!");
+        }
+        else if(currDate.equals(dateSelected) && (hourSelected - 1) <= currHour) {
+            JOptionPane.showMessageDialog(null, "Nu poti alege ora curenta sau o ora anterioara orei curente pentru un eveniment din ziua curenta!");
+        }
+        else {
+            hourSelected--;
+            if(hourSelected < 0) hourSelected = 23;
+            if(hourSelected < 10) addHourInp.setText("0" + hourSelected);
+            else addHourInp.setText("" + hourSelected);
+        }
     }
 
     public void clearEventForm() {
         addTitleInp.setText("");
         addColorBtn.setBackground(btnColor);
         addLocationCB.setSelectedIndex(0);
-        dateSelectedL.setText("");
+        dateSelectedL.setText("(alegeti data)");
         dateSelected = null;
-        addHourInp.setText("12");
+        calendar = Calendar.getInstance();
+        currHour = calendar.get(Calendar.HOUR_OF_DAY);
+        hourSelected = currHour + 1;
+        addHourInp.setText(hourSelected + "");
         addMinuteInp.setText("00");
-        hourSelected = 12;
         minuteSelected = 0;
         addCategoryCB.setSelectedIndex(0);
         addDescriptionInp.setText("");
@@ -338,26 +269,38 @@ public class AddEventPanel extends MyPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == addColorBtn) {
-            addColorBtn.setBackground(JColorChooser.showDialog(null, "Alege o culoare", btnColor));
+            Color color = JColorChooser.showDialog(null, "Alege o culoare", btnColor);
+            if(color != null) {
+                int grayscale = (color.getRed() + color.getGreen() + color.getBlue()) / 3;
+                if(grayscale > 210) JOptionPane.showMessageDialog(null, "Nuanta culorii alese este prea deschisa! Alegeti o nuanta mai inchisa!");
+                else addColorBtn.setBackground(color);
+            }
         }
         else if(e.getSource() == addDateBtn) {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
             LocalDateTime now = LocalDateTime.now();
-            MyCalendar calendar = new MyCalendar(dtf.format(now));
+            currDate = dtf.format(now);
+            MyCalendar myCalendar = new MyCalendar(currDate);
 
             dateSelected = null;
             Timer timer = new Timer();
             timer.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
-                    if(calendar.isDateSelected()) {
-                        if(calendar.getDate() != null) {
-                            dateSelected = calendar.getDate();
-                        }
+                    if(myCalendar.isDateSelected()) {
+                        if(myCalendar.getDate() != null) dateSelected = myCalendar.getDate();
                     }
-                    if(!calendar.isVisible()) {
+                    else dateSelected = null;
+                    if(!myCalendar.isVisible()) {
                         timer.cancel();
-                        if(dateSelected != null) dateSelectedL.setText(Utils.dateToString(dateSelected));
+                        if(dateSelected != null) { 
+                            dateSelectedL.setText(Utils.dateToString(dateSelected));
+                            if(hourSelected <= currHour) {
+                                hourSelected = currHour + 1;
+                                addHourInp.setText(hourSelected + "");
+                            }
+                        }
+                        myCalendar.dispose();
                     }
                 }
             }, 0, 50);
